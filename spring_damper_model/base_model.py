@@ -50,18 +50,28 @@ class TrainModel():
         self.ndof = None
         self.contact_dofs = []
 
+        self.contact_coeff = None
+        self.contact_power = None
+
 
     def initialise(self):
         self.generate_components()
+        self.set_dofs()
 
+    def calculate_n_elements(self):
+
+        self.n_bogies = self.n_carts * len(self.bogie_distances)
+        self.n_wheels = self.n_bogies * len(self.wheel_distances)
 
     def generate_components(self):
+
+        self.calculate_n_elements()
 
         for i in range(self.n_carts):
             cart = Cart()
             for j in range(self.n_bogies):
                 bogie = Bogie()
-                for k in range(self.n_wheels):
+                for k in range(len(self.wheel_distances)):
                     wheel = Wheel()
                     bogie.wheels.append(wheel)
                 cart.bogies.append(bogie)
@@ -113,6 +123,8 @@ class TrainModel():
                 for wheel in bogie.wheels:
                     mass_matrix[wheel.dofs[0], wheel.dofs[0]] += self.wheel_mass
 
+        return mass_matrix
+
     def generate_stiffness_matrix(self):
         """
         Generate stiffness matrix
@@ -126,7 +138,7 @@ class TrainModel():
                 stiffness_matrix[cart.dofs[1], cart.dofs[1]] += self.cart_stiffness * self.bogie_distances[b]**2
 
                 stiffness_matrix[cart.dofs[0], bogie.dofs[0]] += -self.cart_stiffness
-                stiffness_matrix[bogie.dofs[0], cart.dofs[1]] += -self.cart_stiffness
+                stiffness_matrix[bogie.dofs[0], cart.dofs[0]] += -self.cart_stiffness
 
                 stiffness_matrix[cart.dofs[1], bogie.dofs[0]] += self.cart_stiffness * self.bogie_distances[b]
                 stiffness_matrix[bogie.dofs[0], cart.dofs[1]] += self.cart_stiffness * self.bogie_distances[b]
@@ -206,23 +218,78 @@ class TrainModel():
         :return:
         """
 
-        contact_forces=[]
+        contact_forces = []
 
         # Calculate static contact force
         for cart in self.carts:
-            distributed_load = self.cart_mass * GRAVITY / len(cart.bogies)
-
+            distributed_load_cart = self.cart_mass * -GRAVITY / len(cart.bogies)
 
             for bogie in cart.bogies:
 
-                distributed_load = self.bogie_mass * GRAVITY / len(bogie.wheels) + distributed_load
+                distributed_load_bogie = (self.bogie_mass * -GRAVITY + distributed_load_cart) / len(bogie.wheels)
 
-
-                for wheel in bogie.wheels:
-                    contact_force = self.wheel_mass * GRAVITY + distributed_load
+                for _ in bogie.wheels:
+                    contact_force = self.wheel_mass * -GRAVITY + distributed_load_bogie
                     contact_forces.append(contact_force)
 
 
         return np.array(contact_forces)
+
+    def apply_dirichlet_bc(self, A, b, bc_indices):
+        """
+        Apply Dirichlet boundary conditions to a stiffness matrix and force vector.
+
+        Parameters
+        ----------
+        A : ndarray
+            The stiffness matrix.
+        b : ndarray
+            The force vector.
+        bc_indices : list of int
+            The indices at which to apply the boundary conditions.
+        """
+        # Ensure A is a numpy array.
+        A = np.asarray(A)
+
+        # Ensure b is a numpy array.
+        b = np.asarray(b)
+
+
+
+        # For each boundary condition
+        for index in bc_indices:
+            # Replace the i-th row of A with the unit vector.
+            A[index, :] = 0.0
+            A[:, index] = 0.0
+            A[index, index] = 1.0
+
+            b[index] = 0.0
+
+
+        return A, b
+
+    def calculate_initial_displacement(self,K, F, u_wheels):
+        # apply dirichlet boundary condition
+
+
+        u = np.zeros(self.ndof)
+
+
+        u[self.contact_dofs] = u_wheels
+
+        F_imposed = K.dot(u)
+
+        # F = F + F_imposed
+
+        K_constr, F_constr, = self.apply_dirichlet_bc(K, F, self.contact_dofs)
+
+        # Solve the linear system.
+        u = np.linalg.solve(K_constr, F_constr)
+        u[self.contact_dofs] = u_wheels
+
+        return u
+
+
+
 
 
