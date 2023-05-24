@@ -59,9 +59,7 @@ class TestSpringDamperModel(unittest.TestCase):
 
         euler_beam_structure = TestUtils.create_simply_supported_euler_beams(n_beams, E, I, L, rho, A, omega_1,omega_2)
 
-
-
-        n_steps= 20000
+        n_steps= 2000
         time = np.linspace(0, 1.8, n_steps)
 
         dt = time[1] - time[0]
@@ -75,36 +73,35 @@ class TestSpringDamperModel(unittest.TestCase):
         a_structure = np.zeros(euler_beam_structure.K_global.shape[0])
 
         all_u_beam = []
-        for t in range(n_steps):
+        all_u_bogie = []
+        for t in range(n_steps-1):
 
-
-            u_vert =TestUtils.get_result_at_x_on_simply_supported_euler_beams(u_structure, euler_beam_structure, loc_vehicle)
-
+            u_vert =TestUtils.get_result_at_x_on_simply_supported_euler_beams(u_structure, euler_beam_structure,
+                                                                              loc_vehicle)
             u_at_wheel = [[0,u_vert,0]]
-
-            #F_vehicle = [-85837]
 
             F_vehicle = uvec(u_at_wheel, theta_ini, dt, t, state, parameters)
 
             F_at_structure = np.zeros(euler_beam_structure.K_global.shape[0])
 
             for f in F_vehicle:
-                F_at_structure += TestUtils.set_load_at_x_on_simply_supported_euler_beams(euler_beam_structure, loc_vehicle, f)
+                F_at_structure = F_at_structure + TestUtils.set_load_at_x_on_simply_supported_euler_beams(euler_beam_structure, loc_vehicle, f)
 
             u_structure, v_structure, a_structure = solver.calculate(euler_beam_structure.M_global,
                                                                      euler_beam_structure.C_global,
                                                                      euler_beam_structure.K_global,
-                                                                     F_at_structure, dt, t, u_structure, v_structure,
-                                                                     a_structure)
+                                                                     F_at_structure, dt, t, np.copy(u_structure), np.copy(v_structure),
+                                                                     np.copy(a_structure))
             loc_vehicle = loc_vehicle + velocity * dt
 
             all_u_beam.append(u_structure)
+            all_u_bogie.append(state["u"][-3])
 
         all_u_beam = np.array(all_u_beam)
+        all_u_bogie = np.array(all_u_bogie)
 
-        plt.plot(time, -all_u_beam[:,len(u_structure)//2+1], color='r', label="beam")
-
-
+        plt.plot(time[:-1], -all_u_beam[:,len(u_structure)//2+1], color='r', label="beam")
+        plt.plot(time[:-1], -all_u_bogie, color='b', label="bogie")
         plt.show()
 
 

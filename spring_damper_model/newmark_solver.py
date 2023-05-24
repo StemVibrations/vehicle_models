@@ -30,10 +30,16 @@ class NewmarkExplicit():
         beta = self.beta
         gamma = self.gamma
 
-
         # initial acceleration
+        # if t_index == 0:
+        # a_ini = np.linalg.solve(M, F - C.dot(v_ini) - K.dot(u_ini))
+
         if t_index == 0:
             a_ini = np.linalg.solve(M, F - C.dot(v_ini) - K.dot(u_ini))
+        # else:
+        #     a_ini = np.zeros_like(a_ini)
+
+        # tmp = a_tmp - a_ini
 
         #calculate newmark constants
         a0 = 1 / (beta * dt ** 2)
@@ -42,6 +48,7 @@ class NewmarkExplicit():
         a3 = 1 / (2 * beta) - 1
         a4 = gamma / beta - 1
         a5 = dt / 2 * (gamma / beta - 2)
+        # a5 = gamma/beta - 2*dt/2
         a6 = dt * (1 - gamma)
         a7 = gamma * dt
 

@@ -36,7 +36,6 @@ class BeamElement:
         l = self.L
 
         # precalculate for efficiency
-        constant = 1 / 2
         x_l = local_coordinate / l
         x_l2 = x_l ** 2
 
@@ -44,10 +43,10 @@ class BeamElement:
         x3 = local_coordinate ** 3
 
         disp_shape_functions = np.zeros(4)
-        disp_shape_functions[0] = constant * (1 + 2 * x_l ** 3 - 3 * x_l2)
-        disp_shape_functions[1] = constant * (local_coordinate + (x3 / l ** 2) - 2 * (x2 / l))
-        disp_shape_functions[2] = constant * (-2 * x_l ** 3 + 3 * x_l2)
-        disp_shape_functions[3] = constant * ((x3 / l ** 2) - (x2 / l))
+        disp_shape_functions[0] = (1 + 2 * x_l ** 3 - 3 * x_l2)
+        disp_shape_functions[1] = (local_coordinate + (x3 / l ** 2) - 2 * (x2 / l))
+        disp_shape_functions[2] = (-2 * x_l ** 3 + 3 * x_l2)
+        disp_shape_functions[3] = ((x3 / l ** 2) - (x2 / l))
 
         return disp_shape_functions
 

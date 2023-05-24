@@ -21,8 +21,9 @@ def uvec(u: np.ndarray, theta: np.ndarray, time_step: float, time_index: int, st
     # initialise the train system
     (M, C, K, F_train), train = initialise(time_index, parameters, state)
 
-    # calculate norm of u vector
-    u_norm = np.linalg.norm(u, axis=1)
+    # calculate norm of u vector, gravity is downwards
+    u_norm = u[0][1]
+    # u_norm = -np.linalg.norm(u, axis=1)
 
     # calculate static displacement
     u_static = train.calculate_initial_displacement(K, F_train, u_norm)
@@ -38,7 +39,7 @@ def uvec(u: np.ndarray, theta: np.ndarray, time_step: float, time_index: int, st
 
     # calculate force vector
     F = F_train
-    F[train.contact_dofs] += F_contact
+    F[train.contact_dofs] = F[train.contact_dofs] + F_contact
 
     # calculate new state
     u_train, v_train, a_train = calculate(parameters,state,(M, C, K, F), time_step, time_index)
@@ -47,7 +48,7 @@ def uvec(u: np.ndarray, theta: np.ndarray, time_step: float, time_index: int, st
     state["v"] = v_train
     state["a"] = a_train
 
-    return (-F[train.contact_dofs]).tolist()
+    return (-F_contact).tolist()
 
 
 def initialise(time_index, parameters, state):

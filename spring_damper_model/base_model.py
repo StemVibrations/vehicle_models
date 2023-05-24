@@ -248,13 +248,6 @@ class TrainModel():
         bc_indices : list of int
             The indices at which to apply the boundary conditions.
         """
-        # Ensure A is a numpy array.
-        A = np.asarray(A)
-
-        # Ensure b is a numpy array.
-        b = np.asarray(b)
-
-
 
         # For each boundary condition
         for index in bc_indices:
@@ -281,7 +274,7 @@ class TrainModel():
 
         # F = F + F_imposed
 
-        K_constr, F_constr, = self.apply_dirichlet_bc(K, F, self.contact_dofs)
+        K_constr, F_constr, = self.apply_dirichlet_bc(np.copy(K), np.copy(F), self.contact_dofs)
 
         # Solve the linear system.
         u = np.linalg.solve(K_constr, F_constr)

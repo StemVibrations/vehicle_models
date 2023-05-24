@@ -17,7 +17,7 @@ class HertzianContact():
         :return:
         """
 
-        contact_force = np.sign( - du) * np.nan_to_num(np.power( 1 /self.contact_coeff * -du, self.contact_power))
+        contact_force = np.sign( -du) * np.nan_to_num(np.power( 1 /self.contact_coeff * -du, self.contact_power))
         return contact_force
 
 
