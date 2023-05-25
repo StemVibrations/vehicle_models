@@ -1,6 +1,6 @@
 
 import numpy as np
-from scipy.linalg import solve
+
 
 class BeamElement:
     def __init__(self, E, I, L, rho, A, alpha, beta):
@@ -186,33 +186,3 @@ class TestUtils():
         F_vector[np.array(global_dof_indices)[mask].astype(int)] = force_vector[mask]
 
         return F_vector
-
-
-
-
-if __name__ == '__main__':
-
-
-    n_elements = 10
-    E = 2.1e11
-    I = 0.0001
-    L = 1
-    rho = 7850
-    A = 0.01
-    omega_1 = 0.1
-    omega_2 = 0.2
-
-
-    structure = TestUtils.create_simply_supported_euler_beams(n_elements, E, I, L, rho, A, omega_1, omega_2)
-
-    u = np.zeros(2 * n_elements -2)
-    u[1] = 1
-
-    disp = TestUtils.get_result_at_x_on_simply_supported_euler_beams(u, structure,0.5)
-
-    import matplotlib.pyplot as plt
-
-    plt.plot(u[:,10])
-    plt.show()
-
-    print("Test passed!")

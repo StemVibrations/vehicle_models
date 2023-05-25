@@ -31,15 +31,9 @@ class NewmarkExplicit():
         gamma = self.gamma
 
         # initial acceleration
-        # if t_index == 0:
-        # a_ini = np.linalg.solve(M, F - C.dot(v_ini) - K.dot(u_ini))
 
         if t_index == 0:
             a_ini = np.linalg.solve(M, F - C.dot(v_ini) - K.dot(u_ini))
-        # else:
-        #     a_ini = np.zeros_like(a_ini)
-
-        # tmp = a_tmp - a_ini
 
         #calculate newmark constants
         a0 = 1 / (beta * dt ** 2)
@@ -56,8 +50,8 @@ class NewmarkExplicit():
         K_eff = K + a0 * M + a1 * C
 
         # calculate effective force vector
-        m_part = M.dot(a0 * u_ini + a2 * v_ini + a3 * a_ini)
-        c_part = C.dot(a1 * u_ini + a4 * v_ini + a5 * a_ini)
+        m_part = M @ (a0 * u_ini + a2 * v_ini + a3 * a_ini)
+        c_part = C @ (a1 * u_ini + a4 * v_ini + a5 * a_ini)
         force_eff = F + m_part + c_part
 
         # solve for displacement
