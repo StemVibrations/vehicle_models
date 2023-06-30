@@ -1,10 +1,17 @@
+import unittest
+import json
+
 import matplotlib.pyplot as plt
 import numpy as np
-import unittest
 
 from spring_damper_model.uvec import uvec
 from spring_damper_model.newmark_solver import NewmarkExplicit
+
 from tests.utils import TestUtils
+
+
+INSPECT_RESULTS = False
+
 
 class TestSpringDamperModel(unittest.TestCase):
 
@@ -88,7 +95,7 @@ class TestSpringDamperModel(unittest.TestCase):
         for t in range(n_steps-1):
 
             # get vertical displacement at vehicle location on beam
-            u_vert =TestUtils.get_result_at_x_on_simply_supported_euler_beams(u_structure, euler_beam_structure,
+            u_vert = TestUtils.get_result_at_x_on_simply_supported_euler_beams(u_structure, euler_beam_structure,
                                                                               loc_vehicle)
             u_at_wheel = np.array([[0, u_vert, 0]])
 
@@ -105,8 +112,8 @@ class TestSpringDamperModel(unittest.TestCase):
             u_structure, v_structure, a_structure = solver.calculate(euler_beam_structure.M_global,
                                                                      euler_beam_structure.C_global,
                                                                      euler_beam_structure.K_global,
-                                                                     F_at_structure, dt, t, np.copy(u_structure), np.copy(v_structure),
-                                                                     np.copy(a_structure))
+                                                                     F_at_structure, dt, t, np.copy(u_structure),
+                                                                     np.copy(v_structure), np.copy(a_structure))
 
             # update vehicle location
             loc_vehicle = loc_vehicle + velocity * dt
@@ -115,12 +122,19 @@ class TestSpringDamperModel(unittest.TestCase):
             all_u_beam.append(u_structure)
             all_u_bogie.append(state["u"][-3])
 
-        all_u_beam = np.array(all_u_beam)
-        all_u_bogie = np.array(all_u_bogie)
+        # load expected results
+        expected_results = json.load(open('tests/test_data/expected_data_test_spring_damper.json',"r"))
 
-        # plot displacement results of the centre of the beam and the bogie
-        plt.plot(time[:-1], -all_u_beam[:,len(u_structure)//2+1], color='r', label="beam")
-        plt.plot(time[:-1], -all_u_bogie, color='b', label="bogie")
-        plt.show()
+        if INSPECT_RESULTS:
+            all_u_beam = np.array(all_u_beam)
+            all_u_bogie = np.array(all_u_bogie)
 
+            # plot displacement results of the centre of the beam and the bogie
+            plt.plot(time[:-1], -all_u_beam[:,len(u_structure)//2+1], color='r', label="beam")
+            plt.plot(time[:-1], -all_u_bogie, color='b', label="bogie")
+            plt.show()
+
+        # Assert results
+        np.testing.assert_almost_equal(all_u_beam, expected_results["u_beam"])
+        np.testing.assert_almost_equal(all_u_bogie, expected_results["u_bogie"])
 
