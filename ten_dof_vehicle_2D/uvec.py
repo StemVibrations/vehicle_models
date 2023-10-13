@@ -1,10 +1,11 @@
 import numpy as np
 from typing import Union, List, Dict
 
-from spring_damper_model.base_model import TrainModel
-from spring_damper_model.hertzian_contact import HertzianContact
+from ten_dof_vehicle_2D.base_model import TrainModel
+from ten_dof_vehicle_2D.hertzian_contact import HertzianContact
+from ten_dof_vehicle_2D.newmark_solver import NewmarkExplicit
 
-from spring_damper_model.newmark_solver import NewmarkExplicit
+
 def uvec(u: np.ndarray, theta: np.ndarray, time_step: float, time_index: int, state: Union[Dict, List] = None,
          parameters: Union[Dict, List] = None):
     """
@@ -110,4 +111,3 @@ def calculate(state, matrices, time_step, t):
 
     solver = NewmarkExplicit()
     return solver.calculate(M, C, K, F, time_step, t, u, v, a)
-
