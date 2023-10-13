@@ -1,3 +1,7 @@
+![Tests](https://github.com/StemVibrations/vehicle_models/actions/workflows/workflow.yml/badge.svg)
+[![codecov](https://codecov.io/gh/StemVibrations/vehicle_models/graph/badge.svg?token=0SCPA6LAGT)](https://codecov.io/gh/StemVibrations/vehicle_models)
+
+
 # User defined VEhiCle models [UVEC]
 
 This repository contains the User defined VEhiCle models [UVEC] for STEM.
