@@ -1,5 +1,5 @@
 import numpy as np
-from spring_damper_model.newmark_solver import NewmarkExplicit
+from ten_dof_vehicle_2D.newmark_solver import NewmarkExplicit
 
 import pytest
 import unittest

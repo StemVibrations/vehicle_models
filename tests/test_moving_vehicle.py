@@ -4,8 +4,8 @@ import json
 import matplotlib.pyplot as plt
 import numpy as np
 
-from spring_damper_model.uvec import uvec
-from spring_damper_model.newmark_solver import NewmarkExplicit
+from ten_dof_vehicle_2D.uvec import uvec
+from ten_dof_vehicle_2D.newmark_solver import NewmarkExplicit
 
 from tests.utils import TestUtils
 
