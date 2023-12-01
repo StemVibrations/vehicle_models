@@ -30,7 +30,6 @@ class TestTwoDofNoContact(unittest.TestCase):
                                 "k": 1595e5,
                                 "m1": 5720,
                                 "m2": 3000,
-                                "file_name": "test_two_dof.txt",
                                 },
                         "state": {
                                 "a": 0,
