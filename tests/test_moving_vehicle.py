@@ -35,9 +35,9 @@ class TestSpringDamperModel(unittest.TestCase):
                                           "cart_damping": 0,
                                           "bogie_distances": [0],
                                           "bogie_inertia": 0,
-                                          "bogie_mass": 5750,
+                                          "bogie_mass": 3000,
                                           "wheel_distances": [0],
-                                          "wheel_mass": 3000,
+                                          "wheel_mass": 5750,
                                           "wheel_stiffness": 1595e5,
                                           "wheel_damping": 1000,
                                           "contact_coefficient": 9.1e-8,
@@ -59,10 +59,11 @@ class TestSpringDamperModel(unittest.TestCase):
         velocity = 100 / 3.6
 
         # Euler beam parameters
-        n_beams = 10
+        n_beams = 20
+        length_beam = 50
         E = 2.87e9
         I = 2.9
-        L = 25/5
+        L = length_beam / n_beams
         rho = 2303
         A = 1
         omega_1 = 0
@@ -137,7 +138,7 @@ class TestSpringDamperModel(unittest.TestCase):
             ss = TwoDofVehicle()
             ss.vehicle(json_input_file["parameters"]["bogie_mass"], json_input_file["parameters"]["wheel_mass"], velocity,
                        json_input_file["parameters"]["wheel_stiffness"], json_input_file["parameters"]["wheel_damping"])
-            ss.beam(E, I, rho, A, L*n_beams)
+            ss.beam(E, I, rho, A, length_beam)
             ss.compute()
 
             ax[0].plot(ss.time, ss.displacement[:, 0], color='b', marker="x", label="analytical")
