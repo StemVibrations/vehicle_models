@@ -29,7 +29,6 @@ def uvec(json_string: str) -> str:
     stiffness = uvec_data["parameters"]["k"]
     damping = uvec_data["parameters"]["c"]
     damping_2 = 1000
-    file_name = uvec_data["parameters"]["file_name"]
 
     u_beam = [u[uw][gravity_axis] for uw in u.keys()]
 
