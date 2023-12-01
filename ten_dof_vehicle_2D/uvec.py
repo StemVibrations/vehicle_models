@@ -1,3 +1,4 @@
+import json
 import numpy as np
 from typing import Union, List, Dict
 
@@ -6,28 +7,37 @@ from ten_dof_vehicle_2D.hertzian_contact import HertzianContact
 from ten_dof_vehicle_2D.newmark_solver import NewmarkExplicit
 
 
-def uvec(u: np.ndarray, theta: np.ndarray, time_step: float, time_index: int, state: Union[Dict, List] = None,
-         parameters: Union[Dict, List] = None):
+def uvec(json_string: str) -> str:
     """
-    Calculate the unit vector in the direction from point u to point v.
+    Args:
+        - json_string (str): json string containing the uvec data
 
-    Parameters
-    ----------
-    u: displacement vector at wheels
-    theta: rotation vector at wheels
-    time_step: time step for the integration
-    time_index: time index
-    state: optional state of the train system
-    parameters: optional parameters
+    Returns:
+        - str: json string containing the load data
     """
+
+
+    # Get the uvec data
+    uvec_data = json.loads(json_string)
+
+    # load the data
+    u = uvec_data["u"]
+    theta = uvec_data["theta"]
+    time_index = uvec_data["time_index"]
+    time_step = uvec_data["dt"]
+    state = uvec_data["state"]
+
+    # Get the uvec parameters
+    parameters = uvec_data["parameters"]
 
     # initialise the train system
     (M, C, K, F_train), train = initialise(time_index, parameters, state)
 
+
     # calculate norm of u vector, gravity is downwards
     gravity_axis = parameters["gravity_axis"]
 
-    u_vertical = u[:,gravity_axis]
+    u_vertical = [u[uw][gravity_axis] for uw in u.keys()]
 
     # calculate static displacement
     u_static = train.calculate_initial_displacement(K, F_train, u_vertical)
@@ -48,11 +58,17 @@ def uvec(u: np.ndarray, theta: np.ndarray, time_step: float, time_index: int, st
     # calculate new state
     u_train, v_train, a_train = calculate(state,(M, C, K, F), time_step, time_index)
 
-    state["u"] = u_train
-    state["v"] = v_train
-    state["a"] = a_train
+    state["u"] = u_train.tolist()
+    state["v"] = v_train.tolist()
+    state["a"] = a_train.tolist()
 
-    return (-F_contact).tolist()
+    # calculate unit vector
+    aux = {}
+    for i, val in enumerate(F_contact):
+        aux[i + 1] = [0., (-val).tolist(), 0.]
+    uvec_data["loads"] = aux
+
+    return json.dumps(uvec_data)
 
 
 def initialise(time_index, parameters, state):
@@ -64,14 +80,14 @@ def initialise(time_index, parameters, state):
     train = TrainModel()
 
     train.n_carts = parameters["n_carts"]
-    train.cart_intertia = parameters["cart_intertia"]
+    train.cart_inertia = parameters["cart_inertia"]
     train.cart_mass = parameters["cart_mass"]
     train.cart_stiffness = parameters["cart_stiffness"]
     train.cart_damping = parameters["cart_damping"]
 
     train.bogie_distances = parameters["bogie_distances"]
 
-    train.bogie_intertia = parameters["bogie_intertia"]
+    train.bogie_inertia = parameters["bogie_inertia"]
     train.bogie_mass = parameters["bogie_mass"]
     train.wheel_distances = parameters["wheel_distances"]
 
