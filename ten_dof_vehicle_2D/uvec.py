@@ -1,6 +1,6 @@
 import json
 import numpy as np
-from typing import Union, List, Dict
+from typing import Tuple
 
 from ten_dof_vehicle_2D.base_model import TrainModel
 from ten_dof_vehicle_2D.hertzian_contact import HertzianContact
@@ -15,7 +15,6 @@ def uvec(json_string: str) -> str:
     Returns:
         - str: json string containing the load data
     """
-
 
     # Get the uvec data
     uvec_data = json.loads(json_string)
@@ -47,6 +46,10 @@ def uvec(json_string: str) -> str:
         state["v"] = np.zeros_like(u_static)
         state["a"] = np.zeros_like(u_static)
 
+    state["u"] = np.array(state["u"])
+    state["v"] = np.array(state["v"])
+    state["a"] = np.array(state["a"])
+
     # calculate contact forces
     F_contact = calculate_contact_forces(u_vertical, train.calculate_static_contact_force(),
                                          state, parameters, train, time_index)
@@ -56,7 +59,7 @@ def uvec(json_string: str) -> str:
     F[train.contact_dofs] = F[train.contact_dofs] + F_contact
 
     # calculate new state
-    u_train, v_train, a_train = calculate(state,(M, C, K, F), time_step, time_index)
+    u_train, v_train, a_train = calculate(state, (M, C, K, F), time_step, time_index)
 
     state["u"] = u_train.tolist()
     state["v"] = v_train.tolist()
@@ -71,9 +74,18 @@ def uvec(json_string: str) -> str:
     return json.dumps(uvec_data)
 
 
-def initialise(time_index, parameters, state):
+def initialise(time_index: int, parameters: dict, state: dict) -> \
+                                    Tuple[Tuple[np.ndarray, np.ndarray, np.ndarray, np.ndarray], TrainModel]:
     """
     Initialise the train system
+
+    Args:
+        - time_index (int): time index
+        - parameters (dict): dictionary containing the parameters
+        - state (dict): dictionary containing the state
+
+    Returns:
+        - Tuple[Tuple[np.ndarray, np.ndarray, np.ndarray, np.ndarray], TrainModel]: tuple containing the global matrices (M, C, K, F) and the train model
     """
 
 
@@ -104,14 +116,28 @@ def initialise(time_index, parameters, state):
     return (M, C, K, F), train
 
 
-def calculate_contact_forces(u, F_static, state, parameters, train, time_index):
+def calculate_contact_forces(u: np.ndarray, F_static: np.ndarray, state: dict, parameters: dict,
+                             train: TrainModel, time_index: int) -> np.ndarray:
+    """
+    Calculate the contact forces
 
+    Args:
+        - u (np.ndarray): vertical displacement of the wheels
+        - F_static (np.ndarray): static contact force
+        - state (dict): dictionary containing the state
+        - parameters (dict): dictionary containing the parameters
+        - train (TrainModel): train model
+        - time_index (int): time index
+
+    Returns:
+        - np.ndarray: array containing the contact forces
+    """
 
     contact_method = HertzianContact()
     contact_method.contact_coeff = parameters["contact_coefficient"]
     contact_method.contact_power = parameters["contact_power"]
 
-    u_wheel = state["u"][train.contact_dofs]
+    u_wheel = np.array(state["u"])[train.contact_dofs]
 
     static_contact_u = contact_method.calculate_contact_deformation(F_static)
 
@@ -120,7 +146,20 @@ def calculate_contact_forces(u, F_static, state, parameters, train, time_index):
     return contact_method.calculate_contact_force(du)
 
 
-def calculate(state, matrices, time_step, t):
+def calculate(state: dict, matrices: Tuple[np.ndarray, np.ndarray, np.ndarray, np.ndarray], time_step, t) -> \
+                                                                        Tuple[np.ndarray, np.ndarray, np.ndarray]:
+    """
+    Calculate the new state
+
+    Args:
+        - state (dict): dictionary containing the state
+        - matrices (Tuple[np.ndarray, np.ndarray, np.ndarray, np.ndarray]): tuple containing the global matrices
+        - time_step (float): time step
+        - t (int): time index
+
+    Returns:
+        - tuple: tuple containing the new state
+    """
 
     (M, C, K, F) = matrices
     (u, v, a) = state["u"], state["v"], state["a"]
