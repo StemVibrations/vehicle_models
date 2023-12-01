@@ -1,5 +1,5 @@
 import numpy as np
-from ten_dof_vehicle_2D.newmark_solver import NewmarkExplicit
+from uvec_ten_dof_vehicle_2D.newmark_solver import NewmarkExplicit
 
 import pytest
 import unittest

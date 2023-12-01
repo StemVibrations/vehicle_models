@@ -2,9 +2,9 @@ import json
 import numpy as np
 from typing import Tuple
 
-from ten_dof_vehicle_2D.base_model import TrainModel
-from ten_dof_vehicle_2D.hertzian_contact import HertzianContact
-from ten_dof_vehicle_2D.newmark_solver import NewmarkExplicit
+from uvec_ten_dof_vehicle_2D.base_model import TrainModel
+from uvec_ten_dof_vehicle_2D.hertzian_contact import HertzianContact
+from uvec_ten_dof_vehicle_2D.newmark_solver import NewmarkExplicit
 
 
 def uvec(json_string: str) -> str:
