@@ -4,8 +4,8 @@ import json
 import matplotlib.pyplot as plt
 import numpy as np
 
-from ten_dof_vehicle_2D.uvec import uvec
-from ten_dof_vehicle_2D.newmark_solver import NewmarkExplicit
+from uvec_ten_dof_vehicle_2D.uvec import uvec
+from uvec_ten_dof_vehicle_2D.newmark_solver import NewmarkExplicit
 
 from tests.utils import TestUtils
 from tests.analytical_solutions.moving_vehicle import TwoDofVehicle
