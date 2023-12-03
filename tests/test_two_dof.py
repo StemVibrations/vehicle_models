@@ -5,7 +5,7 @@ import numpy as np
 from uvec_two_dof_vehicle_2D.uvec import uvec
 from uvec_ten_dof_vehicle_2D.newmark_solver import NewmarkExplicit
 
-from tests.utils import TestUtils
+from tests.utils import UtilsFct
 from tests.analytical_solutions.moving_vehicle import TwoDofVehicle
 
 INSPECT_RESULTS = False
@@ -61,7 +61,7 @@ class TestTwoDofNoContact(unittest.TestCase):
         omega_2 = 0
 
         # Create the euler beam structure
-        euler_beam_structure = TestUtils.create_simply_supported_euler_beams(n_beams, E, I, L, rho, A, omega_1,omega_2)
+        euler_beam_structure = UtilsFct.create_simply_supported_euler_beams(n_beams, E, I, L, rho, A, omega_1,omega_2)
 
         u_structure = np.zeros(euler_beam_structure.K_global.shape[0])
         v_structure = np.zeros(euler_beam_structure.K_global.shape[0])
@@ -84,7 +84,7 @@ class TestTwoDofNoContact(unittest.TestCase):
         for t in range(n_steps - 1):
 
             # get vertical displacement at vehicle location on beam
-            u_vert = TestUtils.get_result_at_x_on_simply_supported_euler_beams(u_structure, euler_beam_structure, loc_vehicle)
+            u_vert = UtilsFct.get_result_at_x_on_simply_supported_euler_beams(u_structure, euler_beam_structure, loc_vehicle)
             json_input_file["u"]["1"][1] = float(u_vert)
 
             # call uvec model and retrieve force at wheel, this is what is tested.
@@ -97,7 +97,7 @@ class TestTwoDofNoContact(unittest.TestCase):
             # set force at vehicle location on beam
             F_at_structure = np.zeros(euler_beam_structure.K_global.shape[0])
             for f in F_vehicle:
-                F_at_structure = F_at_structure + TestUtils.set_load_at_x_on_simply_supported_euler_beams(
+                F_at_structure = F_at_structure + UtilsFct.set_load_at_x_on_simply_supported_euler_beams(
                     euler_beam_structure, loc_vehicle, f)
 
             # calculate the response of the beam

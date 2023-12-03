@@ -116,7 +116,7 @@ class BeamStructure:
         return global_dof_indices
 
 
-class TestUtils():
+class UtilsFct():
 
     def __init__(self):
         pass
