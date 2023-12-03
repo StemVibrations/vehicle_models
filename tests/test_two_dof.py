@@ -109,7 +109,6 @@ class TestTwoDofNoContact(unittest.TestCase):
 
             # update vehicle location
             loc_vehicle = loc_vehicle + velocity * dt
-            print(loc_vehicle)
             json_input_file["time_index"] = t
 
             # store displacement results
