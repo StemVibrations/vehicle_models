@@ -81,9 +81,11 @@ class TestSpringDamperModel(unittest.TestCase):
         solver = NewmarkExplicit()
 
         # set time integration parameters
-        n_steps = 10000
+        n_steps = 2000
         time = np.linspace(0, 1.8, n_steps)
         dt = time[1] - time[0]
+
+        json_input_file["dt"] = dt
 
         # initialize arrays to store results
         all_u_beam = []
@@ -141,8 +143,8 @@ class TestSpringDamperModel(unittest.TestCase):
             ss.beam(E, I, rho, A, length_beam)
             ss.compute()
 
-            ax[0].plot(ss.time, ss.displacement[:, 0], color='b', marker="x", label="analytical")
-            ax[1].plot(ss.time, ss.displacement[:, 1], color='b', marker="x", label="analytical")
+            ax[0].plot(ss.time, ss.displacement[:, 0], color='b', linestyle="--", label="analytical")
+            ax[1].plot(ss.time, ss.displacement[:, 1], color='b', linestyle="--", label="analytical")
             ax[0].set_ylabel("Displacement beam [m]")
             ax[1].set_ylabel("Displacement bogie [m]")
             ax[1].set_xlabel("Time [s]")
@@ -154,4 +156,3 @@ class TestSpringDamperModel(unittest.TestCase):
         # Assert results
         np.testing.assert_almost_equal(all_u_beam, expected_results["u_beam"])
         np.testing.assert_almost_equal(all_u_bogie, expected_results["u_bogie"])
-
