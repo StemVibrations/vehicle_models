@@ -59,7 +59,7 @@ class TestSpringDamperModel(unittest.TestCase):
         velocity = 100 / 3.6
 
         # Euler beam parameters
-        n_beams = 20
+        n_beams = 10
         length_beam = 50
         E = 2.87e9
         I = 2.9
@@ -98,6 +98,7 @@ class TestSpringDamperModel(unittest.TestCase):
             u_vert = UtilsFct.get_result_at_x_on_simply_supported_euler_beams(u_structure, euler_beam_structure,
                                                                               loc_vehicle)
             json_input_file["u"]["1"][1] = u_vert
+            json_input_file["time_index"] = t
 
             # call uvec model and retrieve force at wheel, this is what is tested.
             return_json = uvec(json.dumps(json_input_file))
@@ -122,7 +123,7 @@ class TestSpringDamperModel(unittest.TestCase):
             loc_vehicle = loc_vehicle + velocity * dt
 
             # store displacement results
-            all_u_beam.append(u_structure)
+            all_u_beam.append(u_structure.tolist())
             all_u_bogie.append(json_input_file["state"]["u"][-3])
 
         # load expected results
