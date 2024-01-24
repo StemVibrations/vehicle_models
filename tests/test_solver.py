@@ -4,6 +4,10 @@ from uvec_ten_dof_vehicle_2D.newmark_solver import NewmarkExplicit
 
 
 def test_Newmark():
+    """
+    Test the Newmark solver against the example from Bathe
+    """
+
     # example from bathe
     M = np.array([[2, 0], [0, 1]])
     K = np.array([[6, -2], [-2, 4]])

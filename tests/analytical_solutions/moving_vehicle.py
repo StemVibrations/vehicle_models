@@ -9,11 +9,28 @@ class TwoDofVehicle:
     Based on Biggs "Introduction do Structural Dynamics", pp pg 322
     """
 
-    def __init__(self, t_step=0.001):
+    def __init__(self, t_step: float = 0.001):
         """
         Initialise
 
-        :param t_step: time step (default 0.001)
+        Args:
+            - t_step (float): time step (default 0.001)
+
+        Attributes:
+            - mv (float): mass of sprung vehicle part
+            - mw (float): mass of unsprung vehicle part
+            - speed (float): vehicle speed
+            - k_vehicle (float): vehicle stiffness
+            - c_vehicle (float): vehicle damping
+            - EI (float): bending stiffness of the beam
+            - mass (float): unit mass of the beam
+            - length (float): length of the beam
+            - eig (float): eigen frequency n mode
+            - time (np.array): time
+            - displacement (np.array): displacement (2d array: [beam ; vehicle])
+            - g (float): gravity
+            - beta (float): newmark constant
+            - gamma (float): newmark constant
         """
 
         self.t_step = t_step  # time step
@@ -42,15 +59,16 @@ class TwoDofVehicle:
         self.gamma = 0.5
         return
 
-    def vehicle(self, m1, m2, speed, k, c):
+    def vehicle(self, m1: float, m2: float, speed: float, k: float, c: float):
         """
         Define vehicle properties
 
-        :param m1: mass of sprung vehicle part
-        :param m2: mass of unsprung vehicle part
-        :param speed: vehicle speed
-        :param k: vehicle stiffness
-        :param c: vehicle damping
+        Args:
+            - m1 (float): mass of sprung vehicle part
+            - m2 (float): mass of unsprung vehicle part
+            - speed (float): vehicle speed
+            - k (float): vehicle stiffness
+            - c (float): vehicle damping
         """
 
         self.mv = m1
@@ -60,16 +78,16 @@ class TwoDofVehicle:
         self.c_vehicle = c
         return
 
-    def beam(self, E, I, rho, A, L):
+    def beam(self, E: float, I: float, rho: float, A: float, L: float):
         """
         Beam properties
 
-        :param E: Young modulus
-        :param I: Inertia
-        :param rho: Density
-        :param A: Area
-        :param L: Length
-        :return:
+        Args:
+            - E (float): Young modulus
+            - I (float): Inertia
+            - rho (float): Density
+            - A (float): Area
+            - L (float): Length
         """
         self.EI = E * I
         self.mass = rho * A
@@ -77,11 +95,12 @@ class TwoDofVehicle:
 
         return
 
-    def eigen_freq(self, n):
+    def eigen_freq(self, n: int):
         """
         Computes eigen frequency for a simple supported beam
 
-        :param n: n mode
+        Args:
+            - n (int): n mode
         """
         self.eig = n ** 2 * np.pi ** 2 * np.sqrt(self.EI / (self.mass * self.length ** 4))
         return

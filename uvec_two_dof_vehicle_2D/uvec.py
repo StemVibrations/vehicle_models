@@ -57,7 +57,7 @@ def uvec(json_string: str) -> str:
     return json.dumps(uvec_data)
 
 
-def compute_dofs(parameters: dict, state: dict, delta_t: float, time_index: int):
+def compute_dofs(parameters: dict, state: dict, delta_t: float, time_index: int) -> dict:
     """
     Compute the solution of a two dof system using the Newmark method
 
