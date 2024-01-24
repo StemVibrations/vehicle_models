@@ -67,13 +67,13 @@ class BeamStructure:
             M_global[2 * i:2 * i + 4, 2 * i:2 * i + 4] += element.M
 
         # impose boundary conditions
-        K_global= np.delete(K_global, (0,-2), axis=0)
+        K_global= np.delete(K_global, (0, -2), axis=0)
         K_global = np.delete(K_global, (0, -2), axis=1)
 
-        C_global = np.delete(C_global, (0,-2), axis=0)
+        C_global = np.delete(C_global, (0, -2), axis=0)
         C_global = np.delete(C_global, (0, -2), axis=1)
 
-        M_global = np.delete(M_global, (0,-2), axis=0)
+        M_global = np.delete(M_global, (0, -2), axis=0)
         M_global = np.delete(M_global, (0, -2), axis=1)
 
 
@@ -116,7 +116,7 @@ class BeamStructure:
         return global_dof_indices
 
 
-class TestUtils():
+class UtilsFct():
 
     def __init__(self):
         pass

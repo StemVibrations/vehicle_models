@@ -3,22 +3,47 @@ import numpy as np
 GRAVITY = 9.81
 
 class Cart():
+    """
+    Cart class
+
+    Attributes:
+        - bogies (list): list of bogies
+        - dofs (list): list of degrees of freedom
+    """
     def __init__(self):
+        """
+        Initialise the cart
+        """
         self.bogies = []
         self.dofs = []
-        pass
 
 
 class Bogie():
+    """
+    Bogie class
+
+    Attributes:
+        - wheels (list): list of wheels
+        - dofs (list): list of degrees of freedom
+    """
     def __init__(self):
+        """
+        Initialise the bogie
+        """
         self.wheels = []
         self.dofs =[]
-        pass
+
 
 class Wheel():
+    """
+    Wheel class
+
+    Attributes:
+        - dofs (list): list of degrees of freedom
+    """
     def __init__(self):
         self.dofs = []
-        pass
+
 
 
 
@@ -128,11 +153,11 @@ class TrainModel():
 
         for cart in self.carts:
             mass_matrix[cart.dofs[0], cart.dofs[0]] += self.cart_mass
-            mass_matrix[cart.dofs[1], cart.dofs[1]] += self.cart_intertia
+            mass_matrix[cart.dofs[1], cart.dofs[1]] += self.cart_inertia
 
             for bogie in cart.bogies:
                 mass_matrix[bogie.dofs[0], bogie.dofs[0]] += self.bogie_mass
-                mass_matrix[bogie.dofs[1], bogie.dofs[1]] += self.bogie_intertia
+                mass_matrix[bogie.dofs[1], bogie.dofs[1]] += self.bogie_inertia
 
                 for wheel in bogie.wheels:
                     mass_matrix[wheel.dofs[0], wheel.dofs[0]] += self.wheel_mass

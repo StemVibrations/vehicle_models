@@ -1,27 +1,45 @@
+from typing import Tuple
 import numpy as np
 
 
 class NewmarkExplicit():
+    """
+    Newmark integration scheme for explicit time integration
 
-    def __init__(self, beta=0.25, gamma=0.5):
+    Attributes:
+        - beta (float): beta parameter
+        - gamma (float): gamma parameter
+    """
+
+    def __init__(self, beta:float=0.25, gamma:float=0.5):
+        """
+        Constructor of the NewmarkExplicit class
+
+        Args:
+            - beta (float): beta parameter
+            - gamma (float): gamma parameter
+        """
         self.beta = beta
         self.gamma = gamma
 
-    def calculate(self, M, C, K, F, dt, t_index, u_ini, v_ini, a_ini):
+    def calculate(self, M: np.ndarray, C: np.ndarray, K: np.ndarray, F: np.ndarray, dt: float, t_index: int,
+                   u_ini: np.ndarray, v_ini: np.ndarray, a_ini: np.ndarray) -> Tuple[np.ndarray, np.ndarray, np.ndarray]:
         """
         Newmark integration step.
 
-        :param M: mass matrix
-        :param C: damping matrix
-        :param K: stiffness matrix
-        :param F: force vector
-        :param dt: time step size
-        :param t_index: time index
-        :param u_ini: initial displacement
-        :param v_ini: initial velocity
-        :param a_ini: initial acceleration
-        :return: u, v, a
+        Args:
+            - M (np.ndarray): mass matrix
+            - C (np.ndarray): damping matrix
+            - K (np.ndarray): stiffness matrix
+            - F (np.ndarray): force vector
+            - dt (float): time step
+            - t_index (int): time index
+            - u_ini (np.ndarray): initial displacement
+            - v_ini (np.ndarray): initial velocity
+            - a_ini (np.ndarray): initial acceleration
 
+        Returns:
+            - Tuple[np.ndarray, np.ndarray, np.ndarray]: tuple containing the new displacement, velocity and acceleration
         """
 
         # calculate time step size
