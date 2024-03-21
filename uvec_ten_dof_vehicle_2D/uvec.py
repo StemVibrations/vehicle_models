@@ -6,8 +6,10 @@ from uvec_ten_dof_vehicle_2D.base_model import TrainModel
 from uvec_ten_dof_vehicle_2D.hertzian_contact import HertzianContact
 from uvec_ten_dof_vehicle_2D.newmark_solver import NewmarkExplicit
 
+
 def uvec_static(json_string: str) -> str:
     """
+    Function to calculate the static contact forces of a train system
 
     Args:
         - json_string (str): json string containing the uvec data
@@ -39,16 +41,15 @@ def uvec_static(json_string: str) -> str:
     u_static = train.calculate_initial_displacement(K, F_train, u_vertical)
 
     state["u"] = u_static.tolist()
+
+    # set velocity and acceleration to zero, which is required for when a dynamic simulation is run in a later stage
     state["v"] = np.zeros_like(u_static).tolist()
     state["a"] = np.zeros_like(u_static).tolist()
 
     # calculate contact forces
-    # F_contact = calculate_contact_forces(u_vertical, train.calculate_static_contact_force(),
-    #                                      state, parameters, train, time_index)
-
     F_contact = - train.calculate_static_contact_force()
 
-    # calculate unit vector
+    # Set the load data
     aux = {}
     for i, val in enumerate(F_contact):
         aux[i + 1] = [0., (-val).tolist(), 0.]
@@ -59,6 +60,8 @@ def uvec_static(json_string: str) -> str:
 
 def uvec(json_string: str) -> str:
     """
+    Function to calculate the contact forces of a train system
+
     Args:
         - json_string (str): json string containing the uvec data
 
