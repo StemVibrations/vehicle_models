@@ -6,7 +6,6 @@ def uvec_static(json_string: str) -> str:
     """
     Function to calculate the contact forces of a 2 dof train system
 
-
     Args:
         - json_string (str): json string containing the uvec data
 
@@ -25,17 +24,18 @@ def uvec_static(json_string: str) -> str:
     # Get the uvec parameters
     mass_1 = uvec_data["parameters"]["m1"]  # mass of the top
     mass_2 = uvec_data["parameters"]["m2"]  # mass of the bottom
-    stiffness = uvec_data["parameters"]["k"] # stiffness of the spring
+    stiffness = uvec_data["parameters"]["k"]  # stiffness of the spring
 
     # calculate the external force acting on the system, which is the force of gravity
-    f_external = mass_1 * 9.81
+    f_external = mass_1 * -9.81
 
     # calculate the displacement of the system
-    state["u"] = [-f_external / stiffness + u["1"][gravity_axis]]
+    state["u"] = [f_external / stiffness + u["1"][gravity_axis]]
 
     # calculate and set the load data
-    force = (mass_1 + mass_2) * 9.81
-    uvec_data['loads'] = {1: [0, -force, 0]}
+    force = (mass_1 + mass_2) * -9.81
+    uvec_data['loads'] = {1: [0, 0, 0]}
+    uvec_data['loads'][1][gravity_axis] = force
 
     return json.dumps(uvec_data)
 
@@ -89,7 +89,8 @@ def uvec(json_string: str) -> str:
     force = mass_2 * state["a_g_previous"] + damping_2 * state["v_g_previous"] +  stiffness * (state["u_beam"] - state["u"]) - mass_2 * 9.81
 
     # Set the load data
-    uvec_data['loads'] = {1: [0, -force, 0]}
+    uvec_data['loads'] = {1: [0, 0, 0]}
+    uvec_data['loads'][1][gravity_axis] = -force
     uvec_data["state"] = state
 
     return json.dumps(uvec_data)

@@ -10,12 +10,12 @@ from tests.utils import UtilsFct
 INSPECT_RESULTS = False
 
 
-class TestStaticSpringDamperModel:
+class TestStaticSpringModel:
 
-    def test_static_spring_damper_model(self):
+    def test_static_spring_model(self):
         """
         Tests a static vehicle on a simply supported beam. Where the vehicle consists of a wheel which is in contact
-        with the beam and a mass which is connected to the wheel with a spring and damper and the vehicle is not moving.
+        with the beam and a mass which is connected to the wheel with a spring and the vehicle is not moving.
         """
 
         json_input_data = {"loads": {"1": [0, 0, 0]},
@@ -45,7 +45,7 @@ class TestStaticSpringDamperModel:
                            "u": {"1": [0.0, 0, 0.0]}
                            }
 
-        gravity_constant = 9.81
+        gravity_constant = -9.81
 
         # set vehicle location parameters
         loc_vehicle = 25
@@ -114,7 +114,7 @@ class TestStaticSpringDamperModel:
                                     (48 * E * I))
 
         # Assert results
-        np.testing.assert_allclose(expected_beam_deflection, -np.array(all_u_beam)[:, len(u_structure)//2-1])
+        np.testing.assert_allclose(expected_beam_deflection, np.array(all_u_beam)[:, len(u_structure)//2-1])
 
         # The initial bogie displacement is calculated with a 0 beam deflection, thus it only takes into account
         # the vehicle stiffness and bogie mass. After the initial step, the following displacement is calculated
@@ -126,7 +126,7 @@ class TestStaticSpringDamperModel:
         expected_bogie_displacement = [expected_diff_displacement_vehicle, final_bogie_displacement,
                                        final_bogie_displacement]
 
-        np.testing.assert_almost_equal(expected_bogie_displacement, -np.array(all_u_bogie))
+        np.testing.assert_almost_equal(expected_bogie_displacement, np.array(all_u_bogie))
 
 
         if INSPECT_RESULTS:

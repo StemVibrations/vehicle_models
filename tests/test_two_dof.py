@@ -148,11 +148,8 @@ class TestTwoDofNoContact(unittest.TestCase):
     def test_static_two_dof_model(self):
         """
         Tests a static vehicle on a simply supported beam. Where the vehicle consists of a wheel which
-        is in contact with the beam and a mass which is connected to the wheel with a spring and damper
+        is in contact with the beam and a mass which is connected to the wheel with a spring
 
-        Based on Biggs "Introduction do Structural Dynamics", pp pg 322
-
-        :return:
         """
 
         json_input_data = {"dt": 0.001,
@@ -169,7 +166,7 @@ class TestTwoDofNoContact(unittest.TestCase):
                            "u": {"1": [0.0, 0, 0.0]}
                            }
 
-        gravity_constant = 9.81
+        gravity_constant = -9.81
 
         # set vehicle location parameters
         loc_vehicle = 25
@@ -238,7 +235,7 @@ class TestTwoDofNoContact(unittest.TestCase):
                                          "m1"]) * gravity_constant * length_beam ** 3 / (48 * E * I))
 
         # Assert results
-        np.testing.assert_allclose(expected_beam_deflection, -np.array(all_u_beam)[:, len(u_structure) // 2 - 1])
+        np.testing.assert_allclose(expected_beam_deflection, np.array(all_u_beam)[:, len(u_structure) // 2 - 1])
 
         # The initial bogie displacement is calculated with a 0 beam deflection, thus it only takes into account
         # the vehicle stiffness and bogie mass. After the initial step, the following displacement is calculated
@@ -250,4 +247,4 @@ class TestTwoDofNoContact(unittest.TestCase):
         expected_bogie_displacement = [expected_diff_displacement_vehicle, final_bogie_displacement,
                                        final_bogie_displacement]
 
-        np.testing.assert_almost_equal(expected_bogie_displacement, -np.array(all_u_bogie))
+        np.testing.assert_almost_equal(expected_bogie_displacement, np.array(all_u_bogie))
