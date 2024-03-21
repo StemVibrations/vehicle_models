@@ -2,6 +2,44 @@ import json
 import numpy as np
 
 
+def uvec_static(json_string: str) -> str:
+    """
+    Function to calculate the contact forces of a 2 dof train system
+
+
+    Args:
+        - json_string (str): json string containing the uvec data
+
+    Returns:
+        - str: json string containing the load data
+    """
+    gravity_axis = 1
+
+    # Get the uvec data
+    uvec_data = json.loads(json_string)
+
+    # load the data
+    u = uvec_data["u"]
+    state = uvec_data["state"]
+
+    # Get the uvec parameters
+    mass_1 = uvec_data["parameters"]["m1"]  # mass of the top
+    mass_2 = uvec_data["parameters"]["m2"]  # mass of the bottom
+    stiffness = uvec_data["parameters"]["k"] # stiffness of the spring
+
+    # calculate the external force acting on the system, which is the force of gravity
+    f_external = mass_1 * 9.81
+
+    # calculate the displacement of the system
+    state["u"] = [-f_external / stiffness + u["1"][gravity_axis]]
+
+    # calculate and set the load data
+    force = (mass_1 + mass_2) * 9.81
+    uvec_data['loads'] = {1: [0, -force, 0]}
+
+    return json.dumps(uvec_data)
+
+
 def uvec(json_string: str) -> str:
     """
     Args:
@@ -92,7 +130,6 @@ def compute_dofs(parameters: dict, state: dict, delta_t: float, time_index: int)
 
     # external force
     f_ext = k1 * external_displacement + M * 9.81
-
 
     a1 = 1 / (beta * delta_t ** 2)
     a2 = 1 / (beta * delta_t)
