@@ -1,4 +1,3 @@
-import unittest
 import json
 
 import matplotlib.pyplot as plt
@@ -11,7 +10,7 @@ from tests.utils import UtilsFct
 INSPECT_RESULTS = False
 
 
-class TestStaticSpringDamperModel(unittest.TestCase):
+class TestStaticSpringDamperModel:
 
     def test_static_spring_damper_model(self):
         """
