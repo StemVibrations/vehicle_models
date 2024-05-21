@@ -5,6 +5,7 @@ from typing import Tuple
 from uvec_ten_dof_vehicle_2D.base_model import TrainModel
 from uvec_ten_dof_vehicle_2D.hertzian_contact import HertzianContact
 from uvec_ten_dof_vehicle_2D.newmark_solver import NewmarkExplicit
+from uvec_ten_dof_vehicle_2D.irregularities import calculate_rail_irregularity
 
 
 def uvec(json_string: str) -> str:
@@ -32,26 +33,42 @@ def uvec(json_string: str) -> str:
     # initialise the train system
     (M, C, K, F_train), train = initialise(time_index, parameters, state)
 
-
     # calculate norm of u vector, gravity is downwards
     gravity_axis = parameters["gravity_axis"]
 
     u_vertical = [u[uw][gravity_axis] for uw in u.keys()]
 
-    # calculate static displacement
-    u_static = train.calculate_initial_displacement(K, F_train, u_vertical)
+    wheel_configuration = parameters["wheel_configuration"]
+    velocity = parameters["velocity"]
 
     if time_index <= 0:
+        # calculate static displacement
+        u_static = train.calculate_initial_displacement(K, F_train, u_vertical)
         state["u"] = u_static
         state["v"] = np.zeros_like(u_static)
         state["a"] = np.zeros_like(u_static)
+        state["previous_time"] = 0
+        state["previous_time_index"] = time_index
+        state["current_position"] = [position for position in wheel_configuration]
 
     state["u"] = np.array(state["u"])
     state["v"] = np.array(state["v"])
     state["a"] = np.array(state["a"])
 
+    if time_index > state["previous_time_index"]:
+        state["previous_time"] += time_step
+        for i in range(len(wheel_configuration)):
+            state["current_position"][i] = state["current_position"][i] + velocity * time_step
+
+
+    irregularities = [calculate_rail_irregularity(pos) for pos in state["current_position"]]
+
+    irregular_u = []
+    for i in range(len(irregularities)):
+        irregular_u.append(irregularities[i] + u_vertical[i])
+
     # calculate contact forces
-    F_contact = calculate_contact_forces(u_vertical, train.calculate_static_contact_force(),
+    F_contact = calculate_contact_forces(irregular_u, train.calculate_static_contact_force(),
                                          state, parameters, train, time_index)
 
     # calculate force vector
@@ -70,6 +87,8 @@ def uvec(json_string: str) -> str:
     for i, val in enumerate(F_contact):
         aux[i + 1] = [0., (-val).tolist(), 0.]
     uvec_data["loads"] = aux
+
+    state["previous_time_index"] = time_index
 
     return json.dumps(uvec_data)
 
@@ -111,7 +130,6 @@ def initialise(time_index: int, parameters: dict, state: dict) -> \
 
     # set global matrices
     K, C, M, F = train.generate_global_matrices()
-
 
     return (M, C, K, F), train
 
