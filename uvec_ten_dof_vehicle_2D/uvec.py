@@ -77,6 +77,11 @@ def uvec(json_string: str) -> str:
     F = F_train
     F[train.contact_dofs] = F[train.contact_dofs] + F_contact
 
+    # scale the force vector based on the amount of initialisation steps
+    if "initialisation_steps" in parameters:
+        if time_index + 1 < parameters["initialisation_steps"]:
+            F = F * (time_index + 1) / parameters["initialisation_steps"]
+
     # calculate new state
     u_train, v_train, a_train = calculate(state, (M, C, K, F), time_step, time_index)
 

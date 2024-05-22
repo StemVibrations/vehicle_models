@@ -178,6 +178,7 @@ class TestSpringDamperModel(unittest.TestCase):
                                           "contact_coefficient": 9.1e-8,
                                           "contact_power": 1,
                                           "gravity_axis": 1,  # 0 = x, 1 = y, 2 = z
+                                          "initialisation_steps": 1,
                                           "velocity": 100 / 3.6,
                                           },
                            "state": {"a": [],
@@ -246,6 +247,7 @@ class TestSpringDamperModel(unittest.TestCase):
                                           "contact_coefficient": 9.1e-8,
                                           "contact_power": 1,
                                           "gravity_axis": 1,  # 0 = x, 1 = y, 2 = z
+                                          "initialisation_steps": 1,
                                           "velocity": velocity,
                                           "wheel_configuration": [0],
                                           "irr_parameters": {"Av": 0.0002095}
