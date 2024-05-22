@@ -38,9 +38,6 @@ def uvec(json_string: str) -> str:
 
     u_vertical = [u[uw][gravity_axis] for uw in u.keys()]
 
-    wheel_configuration = parameters["wheel_configuration"]
-    velocity = parameters["velocity"]
-
     if time_index <= 0:
         # calculate static displacement
         u_static = train.calculate_initial_displacement(K, F_train, u_vertical)
@@ -49,7 +46,9 @@ def uvec(json_string: str) -> str:
         state["a"] = np.zeros_like(u_static)
         state["previous_time"] = 0
         state["previous_time_index"] = time_index
-        state["current_position"] = [position for position in wheel_configuration]
+
+        if "wheel_configuration" in parameters:
+            state["current_position"] = [position for position in parameters["wheel_configuration"]]
 
     state["u"] = np.array(state["u"])
     state["v"] = np.array(state["v"])
@@ -57,8 +56,10 @@ def uvec(json_string: str) -> str:
 
     if time_index > state["previous_time_index"]:
         state["previous_time"] += time_step
-        for i in range(len(wheel_configuration)):
-            state["current_position"][i] = state["current_position"][i] + velocity * time_step
+
+        if "wheel_configuration" in parameters:
+            for i in range(len(parameters["wheel_configuration"])):
+                state["current_position"][i] = state["current_position"][i] + parameters["velocity"] * time_step
 
     # check if vertical track irregularity parameter is present and add irregularities if required
     if "irr_parameters" in parameters:
