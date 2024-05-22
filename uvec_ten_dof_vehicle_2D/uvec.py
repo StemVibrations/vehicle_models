@@ -60,15 +60,16 @@ def uvec(json_string: str) -> str:
         for i in range(len(wheel_configuration)):
             state["current_position"][i] = state["current_position"][i] + velocity * time_step
 
+    # check if vertical track irregularity parameter is present and add irregularities if required
+    if "irr_parameters" in parameters:
+        irregularity_paramaters = parameters["irr_parameters"]
 
-    irregularities = [calculate_rail_irregularity(pos) for pos in state["current_position"]]
-
-    irregular_u = []
-    for i in range(len(irregularities)):
-        irregular_u.append(irregularities[i] + u_vertical[i])
+        for i in range(len(u_vertical)):
+            u_vertical[i] = (calculate_rail_irregularity(state["current_position"][i], **irregularity_paramaters)
+                             + u_vertical[i])
 
     # calculate contact forces
-    F_contact = calculate_contact_forces(irregular_u, train.calculate_static_contact_force(),
+    F_contact = calculate_contact_forces(u_vertical, train.calculate_static_contact_force(),
                                          state, parameters, train, time_index)
 
     # calculate force vector

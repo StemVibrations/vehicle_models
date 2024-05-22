@@ -1,5 +1,7 @@
 import numpy as np
 import numpy.typing as npt
+
+
 def calculate_rail_irregularity(x: float, f_min: float = 2, f_max: float = 500, N: int = 2000, Av: float = 0.00002095,
                                 omega_c: float = 0.8242, seed=14) -> float:
     """
