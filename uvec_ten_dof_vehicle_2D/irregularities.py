@@ -53,19 +53,3 @@ def spectral(omega: npt.NDArray[np.float64], Av: float, omega_c: float) -> npt.N
 
     spectral_unevenness = 2 * np.pi * Av * omega_c ** 2 / ((omega ** 2 + omega_c ** 2) * omega ** 2)
     return spectral_unevenness
-
-
-if __name__ == "__main__":
-
-    import matplotlib.pyplot as plt
-
-    distance = np.linspace(0, 50, 50)
-
-    irr_list = []
-    for d in distance:
-        r = calculate_rail_irregularity(d, seed=14)
-        irr_list.append(r)
-
-    plt.plot(distance, irr_list, linestyle='--')
-    plt.show()
-
