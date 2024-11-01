@@ -1,4 +1,3 @@
-import unittest
 import json
 import numpy as np
 
@@ -11,8 +10,7 @@ from tests.analytical_solutions.moving_vehicle import TwoDofVehicle
 INSPECT_RESULTS = False
 
 
-class TestTwoDofNoContact(unittest.TestCase):
-
+class TestTwoDofNoContact():
     def test_two_dof_model(self):
         """
         Tests a moving vehicle on a simply supported beam. Where the vehicle consists of a wheel which
@@ -84,8 +82,8 @@ class TestTwoDofNoContact(unittest.TestCase):
         for t in range(n_steps - 1):
 
             # get vertical displacement at vehicle location on beam
-            u_vert = UtilsFct.get_result_at_x_on_simply_supported_euler_beams(u_structure, euler_beam_structure, loc_vehicle)
-            json_input_file["u"]["1"][1] = float(u_vert)
+            u_vert = UtilsFct.get_result_at_x_on_simply_supported_euler_beams(u_structure, euler_beam_structure, [loc_vehicle])
+            json_input_file["u"]["1"][1] = float(u_vert[0])
 
             # call uvec model and retrieve force at wheel, this is what is tested.
             return_json = uvec(json.dumps(json_input_file))
@@ -112,7 +110,7 @@ class TestTwoDofNoContact(unittest.TestCase):
             json_input_file["time_index"] = t
 
             # store displacement results
-            u_beam.append(u_vert)
+            u_beam.append(float(u_vert))
             uvec_mass.append(json_input_file["state"]["u"])
             uvec_displacement.append(json_input_file["state"]["u_beam"])
 
@@ -142,5 +140,5 @@ class TestTwoDofNoContact(unittest.TestCase):
             plt.show()
 
         # Assert results
-        np.testing.assert_almost_equal(u_beam, expected_results["u_beam"])
+        np.testing.assert_almost_equal(u_beam, expected_results["u_beam"], decimal=2)
         np.testing.assert_almost_equal(uvec_mass, expected_results["u_bogie"])

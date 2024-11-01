@@ -1,4 +1,3 @@
-import unittest
 import json
 
 import matplotlib.pyplot as plt
@@ -14,7 +13,7 @@ from tests.analytical_solutions.moving_vehicle import TwoDofVehicle
 INSPECT_RESULTS = False
 
 
-class TestSpringDamperModel(unittest.TestCase):
+class TestSpringDamperModel():
 
     def test_spring_damper_model(self):
         """
@@ -96,8 +95,8 @@ class TestSpringDamperModel(unittest.TestCase):
 
             # get vertical displacement at vehicle location on beam
             u_vert = UtilsFct.get_result_at_x_on_simply_supported_euler_beams(u_structure, euler_beam_structure,
-                                                                              loc_vehicle)
-            json_input_file["u"]["1"][1] = u_vert
+                                                                              [loc_vehicle])
+            json_input_file["u"]["1"][1] = u_vert[0]
             json_input_file["time_index"] = t
 
             # call uvec model and retrieve force at wheel, this is what is tested.

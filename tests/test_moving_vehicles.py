@@ -12,7 +12,7 @@ from tests.utils import UtilsFct
 INSPECT_RESULTS = False
 
 
-class TestSpringDamperModel:
+class TestSpringDamperModel():
     def test_spring_damper_model(self):
         """
         Tests multiple moving vehicles on a simply supported beam.
