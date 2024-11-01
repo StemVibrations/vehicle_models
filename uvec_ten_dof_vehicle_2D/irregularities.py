@@ -2,8 +2,13 @@ import numpy as np
 import numpy.typing as npt
 
 
-def calculate_rail_irregularity(x: float, f_min: float = 2, f_max: float = 500, N: int = 2000, Av: float = 0.00002095,
-                                omega_c: float = 0.8242, seed=14) -> float:
+def calculate_rail_irregularity(x: float,
+                                f_min: float = 2,
+                                f_max: float = 500,
+                                N: int = 2000,
+                                Av: float = 0.00002095,
+                                omega_c: float = 0.8242,
+                                seed: int = 14) -> float:
     """
      Creates rail unevenness following :cite: `zhang_2001`.
 
@@ -51,5 +56,5 @@ def spectral(omega: npt.NDArray[np.float64], Av: float, omega_c: float) -> npt.N
         - spectral_unevenness (npt.NDArray[np.float64]): spectral unevenness [m3 / rad]
     """
 
-    spectral_unevenness = 2 * np.pi * Av * omega_c ** 2 / ((omega ** 2 + omega_c ** 2) * omega ** 2)
+    spectral_unevenness = 2 * np.pi * Av * omega_c**2 / ((omega**2 + omega_c**2) * omega**2)
     return spectral_unevenness

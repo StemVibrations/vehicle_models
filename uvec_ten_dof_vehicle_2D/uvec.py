@@ -1,6 +1,6 @@
 import json
 import numpy as np
-from typing import Tuple
+from typing import Tuple, List
 
 from uvec_ten_dof_vehicle_2D.base_model import TrainModel
 from uvec_ten_dof_vehicle_2D.hertzian_contact import HertzianContact
@@ -66,12 +66,12 @@ def uvec(json_string: str) -> str:
         irregularity_paramaters = parameters["irr_parameters"]
 
         for i in range(len(u_vertical)):
-            u_vertical[i] = (calculate_rail_irregularity(state["current_position"][i], **irregularity_paramaters)
-                             + u_vertical[i])
+            u_vertical[i] = (calculate_rail_irregularity(state["current_position"][i], **irregularity_paramaters) +
+                             u_vertical[i])
 
     # calculate contact forces
-    F_contact = calculate_contact_forces(u_vertical, train.calculate_static_contact_force(),
-                                         state, parameters, train, time_index)
+    F_contact = calculate_contact_forces(u_vertical, train.calculate_static_contact_force(), state, parameters, train,
+                                         time_index)
 
     # calculate force vector
     F = F_train
@@ -114,7 +114,6 @@ def initialise(time_index: int, parameters: dict, state: dict) -> \
         - Tuple[Tuple[np.ndarray, np.ndarray, np.ndarray, np.ndarray], TrainModel]: tuple containing the global matrices (M, C, K, F) and the train model
     """
 
-
     train = TrainModel()
 
     train.n_carts = parameters["n_carts"]
@@ -141,13 +140,13 @@ def initialise(time_index: int, parameters: dict, state: dict) -> \
     return (M, C, K, F), train
 
 
-def calculate_contact_forces(u: np.ndarray, F_static: np.ndarray, state: dict, parameters: dict,
-                             train: TrainModel, time_index: int) -> np.ndarray:
+def calculate_contact_forces(u: List, F_static: np.ndarray, state: dict, parameters: dict, train: TrainModel,
+                             time_index: int) -> np.ndarray:
     """
     Calculate the contact forces
 
     Args:
-        - u (np.ndarray): vertical displacement of the wheels
+        - u (List): vertical displacement of the wheels
         - F_static (np.ndarray): static contact force
         - state (dict): dictionary containing the state
         - parameters (dict): dictionary containing the parameters
