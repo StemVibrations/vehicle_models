@@ -20,8 +20,7 @@ class BeamElement:
                                                          4 * self.L ** 2]])
 
         M = (self.rho * self.A * self.L / 420) * np.array([[156, 22 * self.L, 54, -13 * self.L],
-                                                           [22 * self.L, 4 * self.L ** 2, 13 * self.L,
-                                                            -3 * self.L ** 2],
+                                                           [22 * self.L, 4 * self.L ** 2, 13 * self.L, -3 * self.L ** 2],
                                                            [54, 13 * self.L, 156, -22 * self.L],
                                                            [-13 * self.L, -3 * self.L ** 2, -22 * self.L,
                                                             4 * self.L ** 2]])
@@ -146,24 +145,25 @@ class UtilsFct():
         return BeamStructure(elements)
 
     @staticmethod
-    def get_result_at_x_on_simply_supported_euler_beams(u_vector, beam_structure, x):
+    def get_result_at_x_on_simply_supported_euler_beams(u_vector, beam_structure, x_list):
 
+        disp_at_x = []
+        for x in x_list:
+            local_coordinate, element_index = beam_structure.get_local_coordinate_from_x(x)
 
-        local_coordinate, element_index = beam_structure.get_local_coordinate_from_x(x)
+            # get the element
+            element = beam_structure.elements[element_index]
+            global_dof_indices = beam_structure.get_global_dof_indices(element_index)
+            disp_shape_functions = element.calculate_disp_shape_functions(local_coordinate)
 
-        # get the element
-        element = beam_structure.elements[element_index]
-        global_dof_indices = beam_structure.get_global_dof_indices(element_index)
-        disp_shape_functions = element.calculate_disp_shape_functions(local_coordinate)
+            # get the displacement at x
+            mask = global_dof_indices != np.array(None)
+            disp = np.zeros(len(global_dof_indices))
+            disp[mask] = u_vector[np.array(global_dof_indices)[mask].astype(int)]
 
-        # get the displacement at x
-        mask = global_dof_indices != np.array(None)
-        disp = np.zeros(len(global_dof_indices))
-        disp[mask] = u_vector[np.array(global_dof_indices)[mask].astype(int)]
+            disp_at_x.append(np.sum(disp * disp_shape_functions))
 
-        disp_at_x = np.sum(disp * disp_shape_functions)
-
-        return disp_at_x
+        return np.array(disp_at_x)
 
     @staticmethod
     def set_load_at_x_on_simply_supported_euler_beams(beam_structure, x, force):

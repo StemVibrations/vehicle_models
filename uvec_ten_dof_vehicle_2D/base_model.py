@@ -56,14 +56,14 @@ class TrainModel():
         self.n_wheels = None
 
 
-        self.cart_intertia = None
+        self.cart_inertia = None
         self.cart_mass = None
         self.cart_stiffness = None
         self.cart_damping = None
         self.bogie_distances = None
-        self.bogie_intertia = None
+        self.bogie_inertia = None
         self.bogie_mass = None
-        self.wheel_intertia = None
+        self.wheel_inertia = None
         self.wheel_mass = None
         self.wheel_stiffness = None
         self.wheel_damping = None
@@ -94,8 +94,8 @@ class TrainModel():
         :return:
         """
 
-        self.n_bogies = self.n_carts * len(self.bogie_distances)
-        self.n_wheels = self.n_bogies * len(self.wheel_distances)
+        self.n_bogies = len(self.bogie_distances)
+        self.n_wheels = len(self.wheel_distances)
 
     def generate_components(self):
         """
