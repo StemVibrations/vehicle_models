@@ -422,7 +422,7 @@ class TestSpringDamperModel():
             all_u_bogie.append(json_input_file["state"]["u"][-3])
 
         # load expected results
-        expected_results = json.load(open('tests/test_data/expected_data_test_spring_damper.json',"r"))
+        expected_results = json.load(open('tests/test_data/expected_data_test_spring_damper_irr.json',"r"))
 
         if INSPECT_RESULTS:
             all_u_beam = np.array(all_u_beam)
