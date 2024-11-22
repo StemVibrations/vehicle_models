@@ -110,7 +110,7 @@ class TestTwoDofNoContact():
             json_input_file["time_index"] = t
 
             # store displacement results
-            u_beam.append(float(u_vert))
+            u_beam.append(u_vert.item())
             uvec_mass.append(json_input_file["state"]["u"])
             uvec_displacement.append(json_input_file["state"]["u_beam"])
 
