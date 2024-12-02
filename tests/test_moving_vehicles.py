@@ -1,5 +1,4 @@
 import json
-
 import matplotlib.pyplot as plt
 import numpy as np
 
@@ -34,7 +33,8 @@ class TestSpringDamperModel():
                                           "wheel_damping": 0.25e3,
                                           "contact_coefficient": 9.1e-5,
                                           "contact_power": 1.0,
-                                          "gravity_axis": 1  # 0 = x, 1 = y, 2 = z
+                                          "gravity_axis": 1,  # 0 = x, 1 = y, 2 = z
+                                          "static_initialisation": False,
                                           },
                             "state": {"a": [],
                                       "u": [],
@@ -152,4 +152,4 @@ class TestSpringDamperModel():
             ax.grid()
             ax.legend()
             plt.tight_layout()
-            plt.close()
+            plt.show()
