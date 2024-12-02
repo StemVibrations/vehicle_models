@@ -2,6 +2,27 @@ from typing import Tuple
 import numpy as np
 
 
+class StaticSolver():
+    """
+    Class for static solver
+    """
+    def __init__(self):
+        pass
+
+    def calculate(self, K: np.ndarray, F: np.ndarray) -> np.ndarray:
+        """
+        Calculate the displacement of a statically loaded structure
+
+        Args:
+            - K (np.ndarray): stiffness matrix
+            - F (np.ndarray): force vector
+
+        Returns:
+            - np.ndarray: displacement vector
+        """
+        return np.linalg.solve(K, F)
+
+
 class NewmarkExplicit():
     """
     Newmark integration scheme for explicit time integration
