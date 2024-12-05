@@ -60,18 +60,11 @@ def compute_static_solution(uvec_data: dict) -> dict:
     u_vertical = [u[uw][gravity_axis] for uw in u.keys()]
 
     if time_index <= 0:
-        # calculate static displacement
-        u_static = train.calculate_initial_displacement(K, F_train, u_vertical)
-        state["u"] = u_static
-        state["v"] = np.zeros_like(u_static)
-        state["a"] = np.zeros_like(u_static)
         state["previous_time"] = 0
         state["previous_time_index"] = time_index
 
         if "wheel_configuration" in parameters.keys():
             state["current_position"] = [position for position in parameters["wheel_configuration"]]
-
-    state["u"] = np.array(state["u"])
 
     if time_index > state["previous_time_index"]:
         state["previous_time"] += time_step
@@ -88,19 +81,6 @@ def compute_static_solution(uvec_data: dict) -> dict:
             u_vertical[i] = (calculate_rail_irregularity(state["current_position"][i], **irregularity_parameters) +
                              u_vertical[i])
 
-    # calculate contact forces
-    F_contact = calculate_contact_forces(u_vertical, train.calculate_static_contact_force(), state, parameters, train,
-                                         time_index)
-
-    # calculate force vector
-    F = F_train
-    F[train.contact_dofs] = F[train.contact_dofs] + F_contact
-
-    # scale the force vector based on the amount of initialisation steps
-    if "initialisation_steps" in parameters:
-        if time_index + 1 < parameters["initialisation_steps"]:
-            F = F * (time_index + 1) / parameters["initialisation_steps"]
-
     # calculate static displacement
     u_static = train.calculate_initial_displacement(K, F_train, u_vertical)
 
@@ -108,7 +88,7 @@ def compute_static_solution(uvec_data: dict) -> dict:
     state["v"] = np.zeros_like(u_static).tolist()
     state["a"] = np.zeros_like(u_static).tolist()
 
-    # calculate contact forces
+    # # calculate contact forces
     F_contact = -train.calculate_static_contact_force()
 
     # calculate unit vector
