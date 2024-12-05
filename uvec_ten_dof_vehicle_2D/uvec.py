@@ -109,7 +109,7 @@ def compute_static_solution(uvec_data: dict) -> dict:
     state["a"] = np.zeros_like(u_static).tolist()
 
     # calculate contact forces
-    F_contact = - train.calculate_static_contact_force()
+    F_contact = -train.calculate_static_contact_force()
 
     # calculate unit vector
     aux = {}

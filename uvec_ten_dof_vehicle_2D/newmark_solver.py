@@ -6,6 +6,7 @@ class StaticSolver():
     """
     Class for static solver
     """
+
     def __init__(self):
         pass
 
