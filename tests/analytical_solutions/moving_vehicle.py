@@ -5,6 +5,7 @@ class TwoDofVehicle:
     """
     Computes the displacement of a two DOF vehicle crossing a simple supported beam.
     Displacement computed at middle spam. Solution assuming only first mode.
+    Unsprung mass is the wheel and sprung mass is the vehicle body.
 
     Based on Biggs "Introduction do Structural Dynamics", pp pg 322
     """
@@ -57,7 +58,6 @@ class TwoDofVehicle:
         # newmark constants
         self.beta = 0.25
         self.gamma = 0.5
-        return
 
     def vehicle(self, m1: float, m2: float, speed: float, k: float, c: float):
         """
@@ -76,7 +76,6 @@ class TwoDofVehicle:
         self.speed = speed
         self.k_vehicle = k
         self.c_vehicle = c
-        return
 
     def beam(self, E: float, I: float, rho: float, A: float, L: float):
         """
@@ -93,8 +92,6 @@ class TwoDofVehicle:
         self.mass = rho * A
         self.length = L
 
-        return
-
     def eigen_freq(self, n: int):
         """
         Computes eigen frequency for a simple supported beam
@@ -103,7 +100,6 @@ class TwoDofVehicle:
             - n (int): n mode
         """
         self.eig = n ** 2 * np.pi ** 2 * np.sqrt(self.EI / (self.mass * self.length ** 4))
-        return
 
     def compute(self):
         """
@@ -164,20 +160,3 @@ class TwoDofVehicle:
 
         # assign to disp
         self.displacement = res
-        return
-
-if __name__ == "__main__":
-    ss = TwoDofVehicle()
-    ss.vehicle(5750, 2000, 100/3.6, 1595e3, 25)
-    ss.beam(2.87e9, 2.9, 2303, 1, 25)
-    ss.compute()
-
-    import matplotlib.pylab as plt
-    fig, ax = plt.subplots()
-    ax.plot(ss.time, ss.displacement[:, 0], color='b', label="beam")
-    ax.plot(ss.time, ss.displacement[:, 1], color='r', label="vehicle")
-    ax.set_xlabel("Length [m]")
-    ax.set_ylabel("Vertical displacement [m]")
-    ax.grid()
-    ax.legend()
-    plt.show()

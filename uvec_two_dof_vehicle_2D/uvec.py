@@ -32,7 +32,6 @@ def uvec(json_string: str) -> str:
 
     u_beam = [u[uw][gravity_axis] for uw in u.keys()]
 
-
     # if first two time step initialise the variables. need to be two because we need the acceleration and velocity
     if time_index <= 1:
         # two dof system
@@ -48,7 +47,8 @@ def uvec(json_string: str) -> str:
     state["u_beam"] = u_beam[0]
     state = compute_dofs(uvec_data["parameters"], state, time_step, time_index)
 
-    force = mass_2 * state["a_g_previous"] + damping_2 * state["v_g_previous"] +  stiffness * (state["u_beam"] - state["u"]) - mass_2 * 9.81
+    force = mass_2 * state["a_g_previous"] + damping_2 * state["v_g_previous"] + stiffness * (
+        state["u_beam"] - state["u"]) - mass_2 * 9.81
 
     # Set the load data
     uvec_data['loads'] = {1: [0, -force, 0]}
@@ -93,8 +93,7 @@ def compute_dofs(parameters: dict, state: dict, delta_t: float, time_index: int)
     # external force
     f_ext = k1 * external_displacement + M * 9.81
 
-
-    a1 = 1 / (beta * delta_t ** 2)
+    a1 = 1 / (beta * delta_t**2)
     a2 = 1 / (beta * delta_t)
     a3 = 1 / (2 * beta) - 1
     a4 = gamma / (beta * delta_t)
@@ -125,10 +124,9 @@ def compute_dofs(parameters: dict, state: dict, delta_t: float, time_index: int)
     state["a"] = aa
     state["u_beam"] = external_displacement
 
-
     new_d = external_displacement
     new_v = (external_displacement - state["u_g_previous"]) / delta_t
-    new_a =(new_v - state["v_g_previous"] ) / delta_t
+    new_a = (new_v - state["v_g_previous"]) / delta_t
     state["u_g_previous"] = new_d
     state["v_g_previous"] = new_v
     state["a_g_previous"] = new_a
