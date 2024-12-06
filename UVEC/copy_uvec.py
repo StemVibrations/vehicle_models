@@ -25,12 +25,18 @@ def is_editable_install(folder_path: str) -> Union[bool, str]:
     if os.path.isdir(folder_path):
         with open(os.path.join(folder_path, "direct_url.json"), "r") as f:
             data = json.load(f)
-            path_package = data["url"].split("file://")[1]
 
-        with open(os.path.join(folder_path, "top_level.txt"), "r") as f:
-            packages = f.read().splitlines()
+            # Check if "url" exists and starts with "file://" (editable install locally)
+            if "url" in data and data["url"].startswith("file://"):
+                path_package = data["url"].split("file://")[1]
 
-        return os.path.join(path_package, packages[0])
+                with open(os.path.join(folder_path, "top_level.txt"), "r") as f:
+                    packages = f.read().splitlines()
+
+                return os.path.join(path_package, packages[0])
+            else:
+                # Not an editable install
+                return False
 
     return False
 
