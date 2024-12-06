@@ -2,10 +2,10 @@ import json
 import numpy as np
 from typing import Tuple, List
 
-from uvec_ten_dof_vehicle_2D.base_model import TrainModel
-from uvec_ten_dof_vehicle_2D.hertzian_contact import HertzianContact
-from uvec_ten_dof_vehicle_2D.newmark_solver import NewmarkExplicit
-from uvec_ten_dof_vehicle_2D.irregularities import calculate_rail_irregularity
+from UVEC.uvec_ten_dof_vehicle_2D.base_model import TrainModel
+from UVEC.uvec_ten_dof_vehicle_2D.hertzian_contact import HertzianContact
+from UVEC.uvec_ten_dof_vehicle_2D.newmark_solver import NewmarkExplicit
+from UVEC.uvec_ten_dof_vehicle_2D.irregularities import calculate_rail_irregularity
 
 
 def uvec(json_string: str) -> str:
