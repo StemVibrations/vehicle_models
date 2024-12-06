@@ -2,8 +2,8 @@ import json
 import matplotlib.pyplot as plt
 import numpy as np
 
-from uvec_ten_dof_vehicle_2D.uvec import uvec
-from uvec_ten_dof_vehicle_2D.newmark_solver import NewmarkExplicit
+from UVEC.uvec_ten_dof_vehicle_2D.uvec import uvec
+from UVEC.uvec_ten_dof_vehicle_2D.newmark_solver import NewmarkExplicit
 
 from tests.utils import UtilsFct
 

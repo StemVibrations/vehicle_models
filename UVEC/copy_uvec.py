@@ -1,12 +1,15 @@
 import os
+import sys
 import json
+import inspect
 import sysconfig
 from shutil import copytree
 from typing import Union
 
+
 from .__version__ import __version__, __title__
 
-path_file = None
+PATH_FILE = None
 
 
 def is_editable_install(folder_path: str) -> Union[bool, str]:
@@ -28,7 +31,7 @@ def is_editable_install(folder_path: str) -> Union[bool, str]:
         with open(os.path.join(folder_path, "top_level.txt"), "r") as f:
             packages = f.read().splitlines()
 
-        return [os.path.join(path_package, p) for p in packages]
+        return os.path.join(path_package, packages[0])
 
     return False
 
@@ -56,14 +59,15 @@ def get_package_path() -> str:
         return editable_path
 
 
-def set_path_file(new_path: str):
+def set_path_file(new_path: str, uvec_name: str):
     """
     Sets the global path_file variable and performs the copy operation.
     """
-    global path_file
-    path_file = new_path
+    global PATH_FILE
+    PATH_FILE = new_path
 
     package_path = get_package_path()
-    base_path = os.path.dirname(path_file)
-    for package in package_path:
-        copytree(package, os.path.join(base_path, path_file, os.path.basename(package)), dirs_exist_ok=True)
+    base_path = os.path.dirname(PATH_FILE)
+
+    copytree(os.path.join(package_path, uvec_name), os.path.join(base_path, PATH_FILE, uvec_name), dirs_exist_ok=True)
+
