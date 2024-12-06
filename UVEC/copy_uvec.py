@@ -6,7 +6,6 @@ import sysconfig
 from shutil import copytree
 from typing import Union
 
-
 from .__version__ import __version__, __title__
 
 PATH_FILE = None
@@ -26,7 +25,7 @@ def is_editable_install(folder_path: str) -> Union[bool, str]:
     if os.path.isdir(folder_path):
         with open(os.path.join(folder_path, "direct_url.json"), "r") as f:
             data = json.load(f)
-            path_package =  data["url"].split("file://")[1]
+            path_package = data["url"].split("file://")[1]
 
         with open(os.path.join(folder_path, "top_level.txt"), "r") as f:
             packages = f.read().splitlines()
@@ -34,6 +33,7 @@ def is_editable_install(folder_path: str) -> Union[bool, str]:
         return os.path.join(path_package, packages[0])
 
     return False
+
 
 def get_package_path() -> str:
     """
@@ -70,4 +70,3 @@ def set_path_file(new_path: str, uvec_name: str):
     base_path = os.path.dirname(PATH_FILE)
 
     copytree(os.path.join(package_path, uvec_name), os.path.join(base_path, PATH_FILE, uvec_name), dirs_exist_ok=True)
-
