@@ -26,7 +26,7 @@ def is_editable_install(folder_path: str) -> Union[bool, str]:
         with open(os.path.join(folder_path, "direct_url.json"), "r") as f:
             data = json.load(f)
 
-            # Check if "url" exists and starts with "file://" (editable install locally)
+            # Check if "url" exists and starts with "file://" (means that package is installed locally in -e mode)
             if "url" in data and data["url"].startswith("file://"):
                 path_package = data["url"].split("file://")[1]
 
@@ -35,7 +35,7 @@ def is_editable_install(folder_path: str) -> Union[bool, str]:
 
                 return os.path.join(path_package, packages[0])
             else:
-                # Not an editable install
+                # package installed in editable mode but not locally
                 return False
 
     return False
