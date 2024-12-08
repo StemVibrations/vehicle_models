@@ -1,6 +1,6 @@
 import numpy as np
 
-from uvec_ten_dof_vehicle_2D.newmark_solver import NewmarkExplicit
+from UVEC.uvec_ten_dof_vehicle_2D.newmark_solver import NewmarkExplicit
 
 
 def test_Newmark():
