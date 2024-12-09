@@ -19,7 +19,7 @@ def is_editable_install(folder_path: str) -> Union[bool, str]:
         - folder_path (str): Path to the folder where the editable package is installed.
 
     Returns:
-        bool: Path to the package is installed in editable mode, False otherwise.
+        - Union[bool, str]: Path to the package is installed in editable mode, False otherwise.
 
     """
     if os.path.isdir(folder_path):
