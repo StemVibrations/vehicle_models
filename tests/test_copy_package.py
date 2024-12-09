@@ -5,7 +5,7 @@ from shutil import rmtree
 class TestCopy():
     def test_copy_package_ten_dof(self):
         """
-        Tests multiple moving vehicles on a simply supported beam.
+        Test copy the 10 DOF uvec
         """
 
         from UVEC import uvec_ten_dof_vehicle_2D as uvec
@@ -18,7 +18,7 @@ class TestCopy():
 
     def test_copy_package_two_dof(self):
         """
-        Tests multiple moving vehicles on a simply supported beam.
+        Test copy the 2 DOF uvec
         """
 
         from UVEC import uvec_two_dof_vehicle_2D as uvec

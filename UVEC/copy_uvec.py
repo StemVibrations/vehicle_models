@@ -68,6 +68,10 @@ def get_package_path() -> str:
 def set_path_file(new_path: str, uvec_name: str):
     """
     Sets the global path_file variable and performs the copy operation.
+
+    Args:
+        - new_path (str): Path to copy the uvec file.
+        - uvec_name (str): Name of the uvec file to copy.
     """
     global PATH_FILE
     PATH_FILE = new_path
