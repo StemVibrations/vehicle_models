@@ -46,7 +46,7 @@ def get_package_path() -> str:
     Gets the path to the current package in the site-packages directory.
 
     Returns:
-        str: Path to the package.
+        - str: Path to the package.
     """
 
     package_name = "-".join([__title__, __version__])
