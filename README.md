@@ -10,3 +10,4 @@ At the moment, the following vehicle models are available:
 
 * `ten_dof_vehicle_2D`: 2-dimensional 10 degrees-of-freedom vehicle model (based on [Zhai and Sun, 1994](https://www.tandfonline.com/doi/abs/10.1080/00423119308969544))
 
+* `two_dof_vehicle_2D`: 2-dimensional 2 degrees-of-freedom vehicle model (based on [Lou and Zeng, 2004](https://onlinelibrary.wiley.com/doi/epdf/10.1002/nme.1207))
