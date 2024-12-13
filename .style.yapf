@@ -10,5 +10,3 @@ split_arguments_when_comma_terminated = True
 SPLIT_BEFORE_FIRST_ARGUMENT = False
 #SPLIT_PENALTY_FOR_ADDED_LINE_SPLIT = 1
 ALLOW_SPLIT_BEFORE_DICT_VALUE = False
-
-
