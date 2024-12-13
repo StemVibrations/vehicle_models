@@ -13,7 +13,6 @@ class TestCopy():
         # uninstall the package
         subprocess.run(['pip', 'uninstall', '-y', "UVEC"])
 
-
         # Install the package in normal mode
         subprocess.run(['pip', 'install', '.', '--force-reinstall'])
 
@@ -37,7 +36,6 @@ class TestCopy():
 
         # uninstall the package
         subprocess.run(['pip', 'uninstall', '-y', "UVEC"])
-
 
         # Install the package in normal mode
         subprocess.run(['pip', 'install', '-e', '.', '--force-reinstall'])
