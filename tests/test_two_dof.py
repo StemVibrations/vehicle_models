@@ -11,6 +11,7 @@ INSPECT_RESULTS = False
 
 
 class TestTwoDofNoContact():
+
     def test_two_dof_model(self):
         """
         Tests a moving vehicle on a simply supported beam. Where the vehicle consists of a wheel which
@@ -21,27 +22,33 @@ class TestTwoDofNoContact():
         :return:
         """
 
-        json_input_file = {"dt": 0.001,
-                        "loads": {"1": [0, 0, 0]},
-                        "parameters": {
-                                "c": 1000,
-                                "k": 1595e5,
-                                "m1": 5720,
-                                "m2": 3000,
-                                },
-                        "state": {
-                                "a": 0,
-                                "u": 0,
-                                "u_beam": 0,
-                                "v": 0
-                                },
-                            "t": 0,
-                            "file_name": "test_two_dof.txt",
-                            "theta": {"1": [0.0, 0.0, 0.0]},
-                            "time_index": 0,
-                            "u": {"1": [0.0, 0, 0.0]}
-                            }
-
+        json_input_file = {
+            "dt": 0.001,
+            "loads": {
+                "1": [0, 0, 0]
+            },
+            "parameters": {
+                "c": 1000,
+                "k": 1595e5,
+                "m1": 5720,
+                "m2": 3000,
+            },
+            "state": {
+                "a": 0,
+                "u": 0,
+                "u_beam": 0,
+                "v": 0
+            },
+            "t": 0,
+            "file_name": "test_two_dof.txt",
+            "theta": {
+                "1": [0.0, 0.0, 0.0]
+            },
+            "time_index": 0,
+            "u": {
+                "1": [0.0, 0, 0.0]
+            }
+        }
 
         # set vehicle location parameters
         loc_vehicle = 0.0
@@ -59,7 +66,7 @@ class TestTwoDofNoContact():
         omega_2 = 0
 
         # Create the euler beam structure
-        euler_beam_structure = UtilsFct.create_simply_supported_euler_beams(n_beams, E, I, L, rho, A, omega_1,omega_2)
+        euler_beam_structure = UtilsFct.create_simply_supported_euler_beams(n_beams, E, I, L, rho, A, omega_1, omega_2)
 
         u_structure = np.zeros(euler_beam_structure.K_global.shape[0])
         v_structure = np.zeros(euler_beam_structure.K_global.shape[0])
@@ -82,7 +89,8 @@ class TestTwoDofNoContact():
         for t in range(n_steps - 1):
 
             # get vertical displacement at vehicle location on beam
-            u_vert = UtilsFct.get_result_at_x_on_simply_supported_euler_beams(u_structure, euler_beam_structure, [loc_vehicle])
+            u_vert = UtilsFct.get_result_at_x_on_simply_supported_euler_beams(u_structure, euler_beam_structure,
+                                                                              [loc_vehicle])
             json_input_file["u"]["1"][1] = float(u_vert[0])
 
             # call uvec model and retrieve force at wheel, this is what is tested.
@@ -101,9 +109,9 @@ class TestTwoDofNoContact():
             # calculate the response of the beam
             u_structure, v_structure, a_structure = solver.calculate(euler_beam_structure.M_global,
                                                                      euler_beam_structure.C_global,
-                                                                     euler_beam_structure.K_global,
-                                                                     F_at_structure, dt, t, np.copy(u_structure),
-                                                                     np.copy(v_structure), np.copy(a_structure))
+                                                                     euler_beam_structure.K_global, F_at_structure, dt,
+                                                                     t, np.copy(u_structure), np.copy(v_structure),
+                                                                     np.copy(a_structure))
 
             # update vehicle location
             loc_vehicle = loc_vehicle + velocity * dt
@@ -115,7 +123,7 @@ class TestTwoDofNoContact():
             uvec_displacement.append(json_input_file["state"]["u_beam"])
 
         # load expected results
-        expected_results = json.load(open('tests/test_data/expected_data_two_dof.json',"r"))
+        expected_results = json.load(open('tests/test_data/expected_data_two_dof.json', "r"))
 
         if INSPECT_RESULTS:
             import matplotlib.pyplot as plt
@@ -126,7 +134,7 @@ class TestTwoDofNoContact():
 
             ss = TwoDofVehicle()
             ss.vehicle(json_input_file["parameters"]["m1"], json_input_file["parameters"]["m2"], velocity,
-                        json_input_file["parameters"]["k"], json_input_file["parameters"]["c"])
+                       json_input_file["parameters"]["k"], json_input_file["parameters"]["c"])
             ss.beam(E, I, rho, A, length_beam)
             ss.compute()
 
