@@ -4,3 +4,4 @@ numpy==2.0.2
 pytest==8.3.4
 pytest-cov==6.0.0
 yapf==0.43.0
+tox==4.23.2
