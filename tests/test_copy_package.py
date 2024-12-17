@@ -28,7 +28,6 @@ class TestCopy():
         path_uvec = uvec.get_path_file(uvec.UVEC_NAME)
         assert os.path.join(site.getsitepackages()[0], r"UVEC/uvec_two_dof_vehicle_2D") == path_uvec
 
-
     def test_install_package_editable(self):
         """
         Test install of 10 DOF uvec in editable mode

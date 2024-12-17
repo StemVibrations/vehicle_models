@@ -2,7 +2,6 @@ import os
 import json
 import site
 import sysconfig
-from typing import Union
 
 from .__version__ import __version__, __title__
 
@@ -26,7 +25,7 @@ def editable_path(folder_path: str) -> str:
         with open(os.path.join(folder_path, "top_level.txt"), "r") as f:
             packages = f.read().splitlines()
 
-        return os.path.join(path_package, packages[0])
+    return os.path.join(path_package, packages[0])
 
 
 def is_installed_editable(package_name: str) -> bool:
@@ -41,10 +40,7 @@ def is_installed_editable(package_name: str) -> bool:
         - bool: True if installed in editable mode, otherwise False.
     """
 
-    if os.path.isfile(os.path.join(site.getsitepackages()[0], f"__editable__.{package_name}.pth")):
-        return True
-    else:
-        return False
+    return os.path.isfile(os.path.join(site.getsitepackages()[0], f"__editable__.{package_name}.pth"))
 
 
 def get_package_path() -> str:
@@ -68,7 +64,7 @@ def get_package_path() -> str:
         return package_path
     else:
         # if installed in editable mode
-        return  editable_path(dist_info_path)
+        return editable_path(dist_info_path)
 
 
 def get_path_file(uvec_name: str) -> str:
