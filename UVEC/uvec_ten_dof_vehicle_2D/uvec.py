@@ -43,7 +43,7 @@ def compute_static_solution(uvec_data: dict) -> dict:
     """
 
     u = uvec_data["u"]
-    theta = uvec_data["theta"]
+    # theta = uvec_data["theta"]
     time_index = uvec_data["time_index"]
     time_step = uvec_data["dt"]
     state = uvec_data["state"]
@@ -114,7 +114,7 @@ def compute_dynamic_solution(uvec_data: dict) -> dict:
     """
 
     u = uvec_data["u"]
-    theta = uvec_data["theta"]
+    # theta = uvec_data["theta"]
     time_index = uvec_data["time_index"]
     time_step = uvec_data["dt"]
     state = uvec_data["state"]
@@ -192,8 +192,8 @@ def compute_dynamic_solution(uvec_data: dict) -> dict:
     return uvec_data
 
 
-def initialise(time_index: int, parameters: dict, state: dict) -> \
-                                    Tuple[Tuple[np.ndarray, np.ndarray, np.ndarray, np.ndarray], TrainModel]:
+def initialise(time_index: int, parameters: dict,
+               state: dict) -> Tuple[Tuple[np.ndarray, np.ndarray, np.ndarray, np.ndarray], TrainModel]:
     """
     Initialise the train system
 
@@ -203,7 +203,8 @@ def initialise(time_index: int, parameters: dict, state: dict) -> \
         - state (dict): dictionary containing the state
 
     Returns:
-        - Tuple[Tuple[np.ndarray, np.ndarray, np.ndarray, np.ndarray], TrainModel]: tuple containing the global matrices (M, C, K, F) and the train model
+        - Tuple[Tuple[np.ndarray, np.ndarray, np.ndarray, np.ndarray], TrainModel]: tuple containing the global \
+            matrices (M, C, K, F) and the train model
     """
 
     train = TrainModel()
@@ -262,14 +263,15 @@ def calculate_contact_forces(u: List, F_static: np.ndarray, state: dict, paramet
     return contact_method.calculate_contact_force(du)
 
 
-def calculate(state: dict, matrices: Tuple[np.ndarray, np.ndarray, np.ndarray, np.ndarray], time_step, t) -> \
-                                                                        Tuple[np.ndarray, np.ndarray, np.ndarray]:
+def calculate(state: dict, matrices: Tuple[np.ndarray, np.ndarray, np.ndarray, np.ndarray], time_step,
+              t) -> Tuple[np.ndarray, np.ndarray, np.ndarray]:
     """
     Calculate the new state dynamic
 
     Args:
         - state (dict): dictionary containing the state
-        - matrices (Tuple[np.ndarray, np.ndarray, np.ndarray, np.ndarray]): tuple containing the global matrices [M, C, K, F]
+        - matrices (Tuple[np.ndarray, np.ndarray, np.ndarray, np.ndarray]): tuple containing the global matrices \
+            [M, C, K, F]
         - time_step (float): time step
         - t (int): time index
 
