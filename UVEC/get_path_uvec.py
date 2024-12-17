@@ -20,10 +20,10 @@ def editable_path(folder_path: str) -> str:
     with open(os.path.join(folder_path, "direct_url.json"), "r") as f:
         data = json.load(f)
 
-        path_package = data["url"].split("file://")[1]
+    path_package = data["url"].split("file://")[1]
 
-        with open(os.path.join(folder_path, "top_level.txt"), "r") as f:
-            packages = f.read().splitlines()
+    with open(os.path.join(folder_path, "top_level.txt"), "r") as f:
+        packages = f.read().splitlines()
 
     return os.path.join(path_package, packages[0])
 
