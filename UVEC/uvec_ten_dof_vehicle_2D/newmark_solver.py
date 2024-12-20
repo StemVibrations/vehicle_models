@@ -61,7 +61,8 @@ class NewmarkExplicit():
             - a_ini (np.ndarray): initial acceleration
 
         Returns:
-            - Tuple[np.ndarray, np.ndarray, np.ndarray]: tuple containing the new displacement, velocity and acceleration
+            - Tuple[np.ndarray, np.ndarray, np.ndarray]: tuple containing the new displacement, velocity and \
+                acceleration
         """
 
         # calculate time step size
@@ -75,7 +76,7 @@ class NewmarkExplicit():
         if t_index == 0:
             a_ini = np.linalg.solve(M, F - C.dot(v_ini) - K.dot(u_ini))
 
-        #calculate newmark constants
+        # calculate newmark constants
         a0 = 1 / (beta * dt**2)
         a1 = gamma / (beta * dt)
         a2 = 1 / (beta * dt)

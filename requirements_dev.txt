@@ -1,6 +1,7 @@
-numpy==1.24
-matplotlib==3.7.1
-pytest==7.2.2
-pytest-cov==4.0.0
-mypy==1.1.1
-yapf==0.40.1
+matplotlib==3.9.3
+mypy==1.13.0
+numpy==2.0.2
+pytest==8.3.4
+pytest-cov==6.0.0
+yapf==0.43.0
+tox==4.23.2

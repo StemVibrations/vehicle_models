@@ -18,17 +18,16 @@ def uvec(json_string: str) -> str:
 
     # load the data
     u = uvec_data["u"]
-    theta = uvec_data["theta"]
+    # theta = uvec_data["theta"]
     time_index = uvec_data["time_index"]
     time_step = uvec_data["dt"]
     state = uvec_data["state"]
 
     # Get the uvec parameters
-    mass_1 = uvec_data["parameters"]["m1"]  # mass of the top
+    # mass_1 = uvec_data["parameters"]["m1"]  # mass of the top
     mass_2 = uvec_data["parameters"]["m2"]  # mass of the bottom
     stiffness = uvec_data["parameters"]["k"]
     damping = uvec_data["parameters"]["c"]
-    damping_2 = 1000
 
     u_beam = [u[uw][gravity_axis] for uw in u.keys()]
 
@@ -47,8 +46,8 @@ def uvec(json_string: str) -> str:
     state["u_beam"] = u_beam[0]
     state = compute_dofs(uvec_data["parameters"], state, time_step, time_index)
 
-    force = mass_2 * state["a_g_previous"] + damping_2 * state["v_g_previous"] + stiffness * (
-        state["u_beam"] - state["u"]) - mass_2 * 9.81
+    force = mass_2 * state["a_g_previous"] + damping * state["v_g_previous"] + stiffness * (state["u_beam"] -
+                                                                                            state["u"]) - mass_2 * 9.81
 
     # Set the load data
     uvec_data['loads'] = {1: [0, -force, 0]}
@@ -72,7 +71,7 @@ def compute_dofs(parameters: dict, state: dict, delta_t: float, time_index: int)
     """
 
     m1 = parameters["m1"]
-    m2 = parameters["m2"]
+    # m2 = parameters["m2"]
     k1 = parameters["k"]
     c1 = parameters["c"]
     external_displacement = state["u_beam"]

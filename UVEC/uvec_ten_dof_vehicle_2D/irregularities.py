@@ -1,5 +1,4 @@
 import numpy as np
-import numpy.typing as npt
 
 
 def calculate_rail_irregularity(x: float,
@@ -43,17 +42,17 @@ def calculate_rail_irregularity(x: float,
     return irregularity
 
 
-def spectral(omega: npt.NDArray[np.float64], Av: float, omega_c: float) -> npt.NDArray[np.float64]:
+def spectral(omega: np.ndarray, Av: float, omega_c: float) -> np.ndarray:
     """
     Computes spectral unevenness
 
     Args:
-        - omega (npt.NDArray[np.float64]): wave number [rad/m]
+        - omega (np.ndarray): wave number [rad/m]
         - Av (float): vertical track irregularity parameters [m2 rad/m]
         - omega_c (float): critical wave number [rad/m]
 
     Returns:
-        - spectral_unevenness (npt.NDArray[np.float64]): spectral unevenness [m3 / rad]
+        - spectral_unevenness (np.ndarray): spectral unevenness [m3 / rad]
     """
 
     spectral_unevenness = 2 * np.pi * Av * omega_c**2 / ((omega**2 + omega_c**2) * omega**2)

@@ -2,6 +2,7 @@ import numpy as np
 
 
 class BeamElement:
+
     def __init__(self, E, I, L, rho, A, alpha, beta):
         self.E = E
         self.I = I
@@ -13,42 +14,40 @@ class BeamElement:
         self.M, self.C, self.K = self.calculate_matrices()
 
     def calculate_matrices(self):
-        K = (self.E * self.I / self.L ** 3) * np.array([[12, 6 * self.L, -12, 6 * self.L],
-                                                        [6 * self.L, 4 * self.L ** 2, -6 * self.L, 2 * self.L ** 2],
-                                                        [-12, -6 * self.L, 12, -6 * self.L],
-                                                        [6 * self.L, 2 * self.L ** 2, -6 * self.L,
-                                                         4 * self.L ** 2]])
+        K = (self.E * self.I / self.L**3) * np.array(
+            [[12, 6 * self.L, -12, 6 * self.L], [6 * self.L, 4 * self.L**2, -6 * self.L, 2 * self.L**2],
+             [-12, -6 * self.L, 12, -6 * self.L], [6 * self.L, 2 * self.L**2, -6 * self.L, 4 * self.L**2]])
 
-        M = (self.rho * self.A * self.L / 420) * np.array([[156, 22 * self.L, 54, -13 * self.L],
-                                                           [22 * self.L, 4 * self.L ** 2, 13 * self.L, -3 * self.L ** 2],
-                                                           [54, 13 * self.L, 156, -22 * self.L],
-                                                           [-13 * self.L, -3 * self.L ** 2, -22 * self.L,
-                                                            4 * self.L ** 2]])
+        M = (self.rho * self.A * self.L / 420) * np.array(
+            [[156, 22 * self.L, 54, -13 * self.L], [22 * self.L, 4 * self.L**2, 13 * self.L, -3 * self.L**2],
+             [54, 13 * self.L, 156, -22 * self.L], [-13 * self.L, -3 * self.L**2, -22 * self.L, 4 * self.L**2]])
 
         C = self.alpha * M + self.beta * K
 
         return M, C, K
 
-    def calculate_disp_shape_functions(self,local_coordinate):
+    def calculate_disp_shape_functions(self, local_coordinate):
 
         l = self.L
 
         # precalculate for efficiency
         x_l = local_coordinate / l
-        x_l2 = x_l ** 2
+        x_l2 = x_l**2
 
-        x2 = local_coordinate ** 2
-        x3 = local_coordinate ** 3
+        x2 = local_coordinate**2
+        x3 = local_coordinate**3
 
         disp_shape_functions = np.zeros(4)
-        disp_shape_functions[0] = (1 + 2 * x_l ** 3 - 3 * x_l2)
-        disp_shape_functions[1] = (local_coordinate + (x3 / l ** 2) - 2 * (x2 / l))
-        disp_shape_functions[2] = (-2 * x_l ** 3 + 3 * x_l2)
-        disp_shape_functions[3] = ((x3 / l ** 2) - (x2 / l))
+        disp_shape_functions[0] = (1 + 2 * x_l**3 - 3 * x_l2)
+        disp_shape_functions[1] = (local_coordinate + (x3 / l**2) - 2 * (x2 / l))
+        disp_shape_functions[2] = (-2 * x_l**3 + 3 * x_l2)
+        disp_shape_functions[3] = ((x3 / l**2) - (x2 / l))
 
         return disp_shape_functions
 
+
 class BeamStructure:
+
     def __init__(self, elements):
         self.elements = elements
         self.K_global, self.C_global, self.M_global = self.assemble_global_matrices()
@@ -66,7 +65,7 @@ class BeamStructure:
             M_global[2 * i:2 * i + 4, 2 * i:2 * i + 4] += element.M
 
         # impose boundary conditions
-        K_global= np.delete(K_global, (0, -2), axis=0)
+        K_global = np.delete(K_global, (0, -2), axis=0)
         K_global = np.delete(K_global, (0, -2), axis=1)
 
         C_global = np.delete(C_global, (0, -2), axis=0)
@@ -74,7 +73,6 @@ class BeamStructure:
 
         M_global = np.delete(M_global, (0, -2), axis=0)
         M_global = np.delete(M_global, (0, -2), axis=1)
-
 
         return K_global, C_global, M_global
 
@@ -85,7 +83,6 @@ class BeamStructure:
 
         # find the element that contains x
         element_index = np.where(node_coordinates > x)[0][0] - 1
-
 
         return element_index
 
@@ -121,7 +118,7 @@ class UtilsFct():
         pass
 
     @staticmethod
-    def create_simply_supported_euler_beams( n_elements, E, I, L, rho, A, omega_1,omega_2):
+    def create_simply_supported_euler_beams(n_elements, E, I, L, rho, A, omega_1, omega_2):
         """
         Create a simply supported euler beam model
 
@@ -136,7 +133,6 @@ class UtilsFct():
         :return:
 
         """
-
 
         # initialize elements
         elements = [BeamElement(E, I, L, rho, A, omega_1, omega_2) for _ in range(n_elements)]
@@ -168,7 +164,7 @@ class UtilsFct():
     @staticmethod
     def set_load_at_x_on_simply_supported_euler_beams(beam_structure, x, force):
 
-        F_vector=np.zeros(beam_structure.K_global.shape[0])
+        F_vector = np.zeros(beam_structure.K_global.shape[0])
 
         local_coordinate, element_index = beam_structure.get_local_coordinate_from_x(x)
 
