@@ -51,7 +51,7 @@ def get_package_path() -> str:
         - str: Path to the package.
     """
 
-    package_name = "-".join([__title__, __version__])
+    package_name = "-".join([__title__.lower(), __version__])
     site_packages_path = sysconfig.get_paths()["purelib"]
     dist_info_path = os.path.join(site_packages_path, f"{package_name}.dist-info")
 
