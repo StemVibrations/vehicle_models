@@ -6,5 +6,4 @@ pytest-cov==6.0.0
 tox==4.23.2
 yapf==0.43.0
 flake8==7.2.0
-mypy==1.14.1
 pre_commit==4.2.0
