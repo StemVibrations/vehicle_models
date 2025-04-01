@@ -31,6 +31,7 @@ def test_irregularities():
         plt.grid()
         plt.show()
 
+
 def test_joint():
 
     dist = np.linspace(0, 10, 100)
