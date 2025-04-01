@@ -9,12 +9,12 @@ def calculate_rail_irregularity(x: float,
                                 omega_c: float = 0.8242,
                                 seed: int = 14) -> float:
     """
-     Creates rail unevenness following :cite: `zhang_2001`.
+     Creates rail unevenness following :cite: `Zhang_2001`.
 
-    A summary of default values can be found in : cite: `Podworna_2015`.
+    A summary of default values can be found in :cite: `Podworna_2015`.
 
     Args:
-        - x (float) : position of the node [m]
+        - x (float) : position of the wheel [m]
         - f_min (float): minimum spatial frequency for the PSD of the unevenness [1/m] (default 2 1/m)
         - f_max: (float) maximum spatial frequency for the PSD of the unevenness [1/m] (default 500 1/m)
         - N (int): number of frequency increments [-] (default 2000)
@@ -57,3 +57,32 @@ def spectral(omega: np.ndarray, Av: float, omega_c: float) -> np.ndarray:
 
     spectral_unevenness = 2 * np.pi * Av * omega_c**2 / ((omega**2 + omega_c**2) * omega**2)
     return spectral_unevenness
+
+
+def calculate_joint_irregularities(x: float,
+                                   location_joint: float,
+                                   depth_joint: float = 0.003,
+                                   width_joint: float = 1) -> float:
+    """
+    Creates joint irregularities following :cite: `Kabo_2006`.
+
+    The default values for the depth joint and length joint are taken from :cite: `Kabo_2006`.
+
+    Args:
+        - x (float): position of the wheel [m]
+        - location_joint (float): absolute location of the joint [m]
+        - depth_joint (float): depth of the joint [m] (default 0.003 m)
+        - length_joint (float): length of the joint [m] (default 1 m)
+    Returns:
+        - joint_profile (float): joint profile [m]
+    """
+
+    joint_profile = 0
+
+    # find indexes where the irregularities are
+    if (x >= location_joint) & (x <= location_joint + width_joint / 2):
+        joint_profile = depth_joint * (np.cos(np.pi * x / width_joint))
+    elif (x >= location_joint - width_joint / 2) & (x < location_joint):
+        joint_profile = depth_joint * (np.cos(np.pi * x / width_joint))
+
+    return joint_profile

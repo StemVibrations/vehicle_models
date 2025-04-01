@@ -18,10 +18,6 @@ class TestSpringDamperModel():
         """
 
         json_input_file = {
-            "dt": 0.001,
-            "loads": {
-                "1": [0, 0, 0]
-            },
             "parameters": {
                 "n_carts": 2,
                 "cart_inertia": (1128.8e3) / 2,
