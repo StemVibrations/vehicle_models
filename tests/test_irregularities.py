@@ -33,6 +33,9 @@ def test_irregularities():
 
 
 def test_joint():
+    """
+    Tests the joint irregularities of the track.
+    """
 
     dist = np.linspace(0, 10, 100)
     irr = np.zeros_like(dist)
