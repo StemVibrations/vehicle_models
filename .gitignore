@@ -3,3 +3,6 @@ venv/*
 .vscode
 *.egg-info/*
 *.pyc
+.tox/*
+build/*
+dist/*

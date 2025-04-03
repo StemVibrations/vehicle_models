@@ -5,7 +5,7 @@ from typing import Tuple, List
 from UVEC.uvec_ten_dof_vehicle_2D.base_model import TrainModel
 from UVEC.uvec_ten_dof_vehicle_2D.hertzian_contact import HertzianContact
 from UVEC.uvec_ten_dof_vehicle_2D.newmark_solver import NewmarkExplicit
-from UVEC.uvec_ten_dof_vehicle_2D.irregularities import calculate_rail_irregularity
+from UVEC.uvec_ten_dof_vehicle_2D.irregularities import calculate_rail_irregularity, calculate_joint_irregularities
 
 
 def uvec(json_string: str) -> str:
@@ -79,6 +79,13 @@ def compute_static_solution(uvec_data: dict) -> dict:
 
         for i in range(len(u_vertical)):
             u_vertical[i] = (calculate_rail_irregularity(state["current_position"][i], **irregularity_parameters) +
+                             u_vertical[i])
+
+    # if hinge is defined
+    if "joint_parameters" in parameters.keys():
+        joint_parameters = parameters["joint_parameters"]
+        for i in range(len(u_vertical)):
+            u_vertical[i] = (calculate_joint_irregularities(state["current_position"][i], **joint_parameters) +
                              u_vertical[i])
 
     # calculate static displacement
@@ -159,6 +166,13 @@ def compute_dynamic_solution(uvec_data: dict) -> dict:
 
         for i in range(len(u_vertical)):
             u_vertical[i] = (calculate_rail_irregularity(state["current_position"][i], **irregularity_parameters) +
+                             u_vertical[i])
+
+    # if hinge is defined
+    if "joint_parameters" in parameters.keys():
+        joint_parameters = parameters["joint_parameters"]
+        for i in range(len(u_vertical)):
+            u_vertical[i] = (calculate_joint_irregularities(state["current_position"][i], **joint_parameters) +
                              u_vertical[i])
 
     # calculate contact forces
