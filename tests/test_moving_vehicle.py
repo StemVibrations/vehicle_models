@@ -7,7 +7,7 @@ from UVEC.uvec_ten_dof_vehicle_2D.newmark_solver import NewmarkExplicit, StaticS
 from tests.utils import UtilsFct
 from tests.analytical_solutions.moving_vehicle import TwoDofVehicle
 
-INSPECT_RESULTS = True
+INSPECT_RESULTS = False
 
 
 class TestSpringDamperModel():
