@@ -82,10 +82,10 @@ def compute_static_solution(uvec_data: dict) -> dict:
                              u_vertical[i])
 
     # if hinge is defined
-    if "hinge_parameters" in parameters.keys():
-        hinge_parameters = parameters["hinge_parameters"]
+    if "joint_parameters" in parameters.keys():
+        joint_parameters = parameters["joint_parameters"]
         for i in range(len(u_vertical)):
-            u_vertical[i] = (calculate_joint_irregularities(state["current_position"][i], **hinge_parameters) +
+            u_vertical[i] = (calculate_joint_irregularities(state["current_position"][i], **joint_parameters) +
                              u_vertical[i])
 
     # calculate static displacement
@@ -169,10 +169,10 @@ def compute_dynamic_solution(uvec_data: dict) -> dict:
                              u_vertical[i])
 
     # if hinge is defined
-    if "hinge_parameters" in parameters.keys():
-        hinge_parameters = parameters["hinge_parameters"]
+    if "joint_parameters" in parameters.keys():
+        joint_parameters = parameters["joint_parameters"]
         for i in range(len(u_vertical)):
-            u_vertical[i] = (calculate_joint_irregularities(state["current_position"][i], **hinge_parameters) +
+            u_vertical[i] = (calculate_joint_irregularities(state["current_position"][i], **joint_parameters) +
                              u_vertical[i])
 
     # calculate contact forces
