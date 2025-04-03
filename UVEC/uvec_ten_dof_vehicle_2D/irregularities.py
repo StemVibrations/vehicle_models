@@ -79,7 +79,7 @@ def calculate_joint_irregularities(x: float,
 
     joint_profile = 0
 
-    # find indexes where the irregularities are
+    # find if wheel is on the joint
     if (x >= location_joint) & (x <= location_joint + width_joint / 2):
         joint_profile = depth_joint * (np.cos(np.pi * x / width_joint))
     elif (x >= location_joint - width_joint / 2) & (x < location_joint):
