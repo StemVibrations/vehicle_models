@@ -7,7 +7,7 @@ from UVEC.uvec_ten_dof_vehicle_2D.newmark_solver import NewmarkExplicit, StaticS
 from tests.utils import UtilsFct
 from tests.analytical_solutions.moving_vehicle import TwoDofVehicle
 
-INSPECT_RESULTS = False
+INSPECT_RESULTS = True
 
 
 class TestSpringDamperModel():
@@ -910,7 +910,7 @@ class TestSpringDamperModel():
     def test_spring_hinge_irregularity(self):
         """
         Tests a moving vehicle on a simply supported beam with a rail joint.
-        This is a integration test, not a comparison with a reference solution.
+        This is a benchmark test, where you compare it against the analytical solution without rail joint.
         """
 
         velocity = 100 / 3.6
@@ -1064,7 +1064,7 @@ class TestSpringDamperModel():
     def test_spring_hinge_irregularity_static(self):
         """
         Tests a moving vehicle on a simply supported beam with a rail joint.
-        This is a integration test, not a comparison with a reference solution.
+        This is a benchmark test, where you compare it against the analytical solution without rail joint.
         """
 
         velocity = 100 / 3.6

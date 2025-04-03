@@ -72,9 +72,9 @@ def calculate_joint_irregularities(x: float,
         - x (float): position of the wheel [m]
         - location_joint (float): absolute location of the joint [m]
         - depth_joint (float): depth of the joint [m] (default 0.003 m)
-        - length_joint (float): length of the joint [m] (default 1 m)
+        - width_joint (float): length of the joint [m] (default 1 m)
     Returns:
-        - joint_profile (float): joint profile [m]
+        - joint_profile (float): displacement of the joint at the wheel location [m]
     """
 
     joint_profile = 0
