@@ -3,7 +3,7 @@ import matplotlib.pyplot as plt
 
 from UVEC.uvec_ten_dof_vehicle_2D import irregularities
 
-SHOW_PLOTS = True
+SHOW_PLOTS = False
 
 
 def test_irregularities():
@@ -48,10 +48,6 @@ def test_joint():
         lines = f.read().splitlines()
     lines = np.array([list(map(float, line.split())) for line in lines])
 
-    # with open('./tests/test_data/hinge_1.txt', 'w') as f:
-    #     for i in range(len(irr)):
-    #         f.write(f"{dist[i]} {irr[i]}\n")
-
     # Compare the two arrays
     np.testing.assert_almost_equal(irr, lines[:, 1], decimal=5)
 
@@ -62,10 +58,6 @@ def test_joint():
     with open('./tests/test_data/hinge_2.txt', 'r') as f:
         lines = f.read().splitlines()
     lines = np.array([list(map(float, line.split())) for line in lines])
-
-    # with open('./tests/test_data/hinge_2.txt', 'w') as f:
-    #     for i in range(len(irr)):
-    #         f.write(f"{dist[i]} {irr[i]}\n")
 
     # Compare the two arrays
     np.testing.assert_almost_equal(irr, lines[:, 1], decimal=5)
