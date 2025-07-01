@@ -2,7 +2,7 @@ import json
 import numpy as np
 
 from UVEC.uvec_two_dof_vehicle_2D.uvec import uvec
-from UVEC.uvec_ten_dof_vehicle_2D.newmark_solver import NewmarkExplicit
+from UVEC.uvec_ten_dof_vehicle_2D_hertz.newmark_solver import NewmarkExplicit
 
 from tests.utils import UtilsFct
 from tests.analytical_solutions.moving_vehicle import TwoDofVehicle
