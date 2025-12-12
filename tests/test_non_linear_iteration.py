@@ -1,20 +1,20 @@
 import json
-import matplotlib.pyplot as plt
+
 import numpy as np
 import numpy.testing as npt
 
 from UVEC.uvec_ten_dof_vehicle_2D.uvec import uvec
 
 class TestNonLinearIteration:
+
     def test_spring_damper_model(self):
         """
-        Tests a moving vehicle on a simply supported beam. Where the vehicle consists of a wheel which
-        is in contact with the beam and a mass which is connected to the wheel with a spring and damper
-
-        Based on Biggs "Introduction do Structural Dynamics", pp pg 322
+        Test that the non-linear iteration in the uvec model works as expected. This is done by running two non-linear
+        iterations at the same time step, and checking that the initial state remains the same, while the current state
+        is updated.
         """
 
-        json_input_file = {
+        input_dict = {
             "parameters": {
                 "n_carts": 1,
                 "cart_inertia": 0,
@@ -44,15 +44,13 @@ class TestNonLinearIteration:
             },
             "time_index": 0,
             "u": {
-                "1": [0.0, 0, 0.0]
-            }
+                "1": [0.0, -10, 0.0]
+            },
+            "dt": 0.01
         }
 
         # run initialisation step
-        json_input_file["dt"] = 0.01
-        json_input_file["u"]["1"][1] = -10
-        json_input_file["time_index"] = 0
-        return_json = uvec(json.dumps(json_input_file))
+        return_json = uvec(json.dumps(input_dict))
 
         # change displacement and time and re-run uvec
         json_input_file = json.loads(return_json)
