@@ -143,22 +143,41 @@ def compute_dynamic_solution(uvec_data: dict) -> dict:
         state["u"] = u_static
         state["v"] = np.zeros_like(u_static)
         state["a"] = np.zeros_like(u_static)
+
+        state["u_ini"] = state["u"].copy()
+        state["v_ini"] = np.zeros_like(u_static)
+        state["a_ini"] = np.zeros_like(u_static)
+
         state["previous_time"] = 0
         state["previous_time_index"] = time_index
 
         if "wheel_configuration" in parameters.keys():
             state["current_position"] = [position for position in parameters["wheel_configuration"]]
 
+    # convert state to numpy arrays
     state["u"] = np.array(state["u"])
     state["v"] = np.array(state["v"])
     state["a"] = np.array(state["a"])
 
     if time_index > state["previous_time_index"]:
+
+        # update initial state
+        state["u_ini"] = state["u"].copy()
+        state["v_ini"] = state["v"].copy()
+        state["a_ini"] = state["a"].copy()
         state["previous_time"] += time_step
 
         if "wheel_configuration" in parameters.keys():
             for i in range(len(parameters["wheel_configuration"])):
                 state["current_position"][i] = state["current_position"][i] + parameters["velocity"] * time_step
+
+    else:
+        # keep the same initial state but convert to numpy arrays
+        state["u_ini"] = np.array(state["u_ini"])
+        state["v_ini"] = np.array(state["v_ini"])
+        state["a_ini"] = np.array(state["a_ini"])
+
+
 
     # check if vertical track irregularity parameter is present and add irregularities if required
     if "irr_parameters" in parameters.keys():
@@ -191,9 +210,13 @@ def compute_dynamic_solution(uvec_data: dict) -> dict:
     # calculate new state
     u_train, v_train, a_train = calculate(state, (M, C, K, F), time_step, time_index)
 
+    # convert state back to lists for json serialization
     state["u"] = u_train.tolist()
     state["v"] = v_train.tolist()
     state["a"] = a_train.tolist()
+    state["u_ini"] = state["u_ini"].tolist()
+    state["v_ini"] = state["v_ini"].tolist()
+    state["a_ini"] = state["a_ini"].tolist()
 
     # calculate unit vector
     aux = {}
@@ -294,7 +317,6 @@ def calculate(state: dict, matrices: Tuple[np.ndarray, np.ndarray, np.ndarray, n
     """
 
     (M, C, K, F) = matrices
-    (u, v, a) = state["u"], state["v"], state["a"]
 
     solver = NewmarkExplicit()
-    return solver.calculate(M, C, K, F, time_step, t, u, v, a)
+    return solver.calculate(M, C, K, F, time_step, t, state["u_ini"], state["v_ini"], state["a_ini"])
