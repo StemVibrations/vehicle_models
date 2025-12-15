@@ -98,6 +98,11 @@ def compute_static_solution(uvec_data: dict) -> dict:
     # # calculate contact forces
     F_contact = -train.calculate_static_contact_force()
 
+    # scale the force vector based on the amount of initialisation steps
+    if "initialisation_steps" in parameters:
+        if time_index + 1 < parameters["initialisation_steps"]:
+            F_contact = F_contact * (time_index + 1) / parameters["initialisation_steps"]
+
     # calculate unit vector
     aux = {}
     for i, val in enumerate(F_contact):
