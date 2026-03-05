@@ -17,7 +17,7 @@ class TestCopy():
         subprocess.run(['pip', 'install', '.', '--force-reinstall'])
 
         # 10 DOF
-        from UVEC import uvec_ten_dof_vehicle_2D as uvec
+        from UVEC import uvec_ten_dof_vehicle_2D_hertz as uvec
         assert uvec.UVEC_NAME == "uvec_ten_dof_vehicle_2D"
         path_uvec = uvec.get_path_file(uvec.UVEC_NAME)
         assert os.path.join(site.getsitepackages()[0], r"UVEC/uvec_ten_dof_vehicle_2D") == path_uvec
@@ -40,7 +40,7 @@ class TestCopy():
         subprocess.run(['pip', 'install', '-e', '.', '--force-reinstall'])
 
         # 10 DOF
-        from UVEC import uvec_ten_dof_vehicle_2D as uvec
+        from UVEC import uvec_ten_dof_vehicle_2D_hertz as uvec
         assert uvec.UVEC_NAME == "uvec_ten_dof_vehicle_2D"
         path_uvec = uvec.get_path_file(uvec.UVEC_NAME)
         assert os.path.join(os.getcwd(), r"UVEC/uvec_ten_dof_vehicle_2D") == path_uvec
