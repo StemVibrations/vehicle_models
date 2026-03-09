@@ -1,7 +1,7 @@
 import numpy as np
 import matplotlib.pyplot as plt
 
-from UVEC.uvec_ten_dof_vehicle_2D import irregularities
+from UVEC.uvec_ten_dof_vehicle_2D_hertz import irregularities
 
 SHOW_PLOTS = False
 
