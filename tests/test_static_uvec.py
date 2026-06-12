@@ -31,6 +31,9 @@ class TestStaticUvec:
                 "gravity_axis": 1,  # 0 = x, 1 = y, 2 = z
                 "static_initialisation": True,
                 "initialisation_steps": 10,
+                "wheel_configuration": None,
+                "irr_parameters": None,
+                "joint_parameters": None,
             },
             "state": {
                 "a": [],

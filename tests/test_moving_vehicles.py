@@ -35,6 +35,10 @@ class TestSpringDamperModel():
                 "contact_power": 1.0,
                 "gravity_axis": 1,  # 0 = x, 1 = y, 2 = z
                 "static_initialisation": False,
+                "wheel_configuration": None,
+                "irr_parameters": None,
+                "joint_parameters": None,
+                "initialisation_steps": None
             },
             "state": {
                 "a": [],

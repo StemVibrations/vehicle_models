@@ -38,6 +38,10 @@ class TestSpringDamperModel():
                 "contact_power": 1,
                 "gravity_axis": 1,  # 0 = x, 1 = y, 2 = z
                 "static_initialisation": False,
+                "wheel_configuration": None,
+                "irr_parameters": None,
+                "joint_parameters": None,
+                "initialisation_steps": None
             },
             "state": {
                 "a": [],
@@ -193,6 +197,7 @@ class TestSpringDamperModel():
                 "irr_parameters": {
                     "Av": 0.0
                 },
+                "joint_parameters": None,
             },
             "state": {
                 "a": [],
@@ -350,6 +355,7 @@ class TestSpringDamperModel():
                     "Av": 0.002,
                     "seed": 14
                 },
+                "joint_parameters": None,
             },
             "state": {
                 "a": [],
@@ -497,6 +503,10 @@ class TestSpringDamperModel():
                 "contact_power": 1,
                 "gravity_axis": 1,  # 0 = x, 1 = y, 2 = z
                 "static_initialisation": True,
+                "wheel_configuration": None,
+                "irr_parameters": None,
+                "joint_parameters": None,
+                "initialisation_steps": None
             },
             "state": {
                 "a": [],
@@ -645,6 +655,8 @@ class TestSpringDamperModel():
                 "irr_parameters": {
                     "Av": 0.0
                 },
+                "joint_parameters": None,
+                "initialisation_steps": None
             },
             "state": {
                 "a": [],
@@ -793,6 +805,8 @@ class TestSpringDamperModel():
                     "Av": 0.002,
                     "seed": 14
                 },
+                "joint_parameters": None,
+                "initialisation_steps": None
             },
             "state": {
                 "a": [],
@@ -941,6 +955,8 @@ class TestSpringDamperModel():
                     "depth_joint": 0.003,
                     "width_joint": 1,
                 },
+                "irr_parameters": None,
+                "initialisation_steps": None
             },
             "state": {
                 "a": [],
@@ -1095,6 +1111,8 @@ class TestSpringDamperModel():
                     "depth_joint": 0.003,
                     "width_joint": 1,
                 },
+                "irr_parameters": None,
+                "initialisation_steps": None
             },
             "state": {
                 "a": [],

@@ -63,18 +63,18 @@ def compute_static_solution(uvec_data: dict) -> dict:
         state["previous_time"] = 0
         state["previous_time_index"] = time_index
 
-        if "wheel_configuration" in parameters.keys():
+        if parameters["wheel_configuration"] is not None:
             state["current_position"] = [position for position in parameters["wheel_configuration"]]
 
     if time_index > state["previous_time_index"]:
         state["previous_time"] += time_step
 
-        if "wheel_configuration" in parameters.keys():
+        if parameters["wheel_configuration"] is not None:
             for i in range(len(parameters["wheel_configuration"])):
                 state["current_position"][i] = state["current_position"][i] + parameters["velocity"] * time_step
 
     # check if vertical track irregularity parameter is present and add irregularities if required
-    if "irr_parameters" in parameters.keys():
+    if parameters["irr_parameters"] is not None:
         irregularity_parameters = parameters["irr_parameters"]
 
         for i in range(len(u_vertical)):
@@ -82,7 +82,7 @@ def compute_static_solution(uvec_data: dict) -> dict:
                              u_vertical[i])
 
     # if hinge is defined
-    if "joint_parameters" in parameters.keys():
+    if parameters["joint_parameters"] is not None:
         joint_parameters = parameters["joint_parameters"]
         for i in range(len(u_vertical)):
             u_vertical[i] = (calculate_joint_irregularities(state["current_position"][i], **joint_parameters) +
@@ -99,7 +99,7 @@ def compute_static_solution(uvec_data: dict) -> dict:
     F_contact = -train.calculate_static_contact_force()
 
     # scale the force vector based on the amount of initialisation steps
-    if "initialisation_steps" in parameters:
+    if parameters["initialisation_steps"] is not None:
         if time_index + 1 < parameters["initialisation_steps"]:
             F_contact = F_contact * (time_index + 1) / parameters["initialisation_steps"]
 
@@ -156,7 +156,7 @@ def compute_dynamic_solution(uvec_data: dict) -> dict:
         state["previous_time"] = 0
         state["previous_time_index"] = time_index
 
-        if "wheel_configuration" in parameters.keys():
+        if parameters["wheel_configuration"] is not None:
             state["current_position"] = [position for position in parameters["wheel_configuration"]]
 
     # convert state to numpy arrays
@@ -172,7 +172,7 @@ def compute_dynamic_solution(uvec_data: dict) -> dict:
         state["a_ini"] = state["a"].copy()
         state["previous_time"] += time_step
 
-        if "wheel_configuration" in parameters.keys():
+        if parameters["wheel_configuration"] is not None:
             for i in range(len(parameters["wheel_configuration"])):
                 state["current_position"][i] = state["current_position"][i] + parameters["velocity"] * time_step
 
@@ -185,7 +185,7 @@ def compute_dynamic_solution(uvec_data: dict) -> dict:
 
 
     # check if vertical track irregularity parameter is present and add irregularities if required
-    if "irr_parameters" in parameters.keys():
+    if parameters["irr_parameters"] is not None:
         irregularity_parameters = parameters["irr_parameters"]
 
         for i in range(len(u_vertical)):
@@ -193,7 +193,7 @@ def compute_dynamic_solution(uvec_data: dict) -> dict:
                              u_vertical[i])
 
     # if hinge is defined
-    if "joint_parameters" in parameters.keys():
+    if parameters["joint_parameters"] is not None:
         joint_parameters = parameters["joint_parameters"]
         for i in range(len(u_vertical)):
             u_vertical[i] = (calculate_joint_irregularities(state["current_position"][i], **joint_parameters) +
@@ -208,7 +208,7 @@ def compute_dynamic_solution(uvec_data: dict) -> dict:
     F[train.contact_dofs] = F[train.contact_dofs] + F_contact
 
     # scale the force vector based on the amount of initialisation steps
-    if "initialisation_steps" in parameters:
+    if parameters["initialisation_steps"] is not None:
         if time_index + 1 < parameters["initialisation_steps"]:
             F = F * (time_index + 1) / parameters["initialisation_steps"]
 
