@@ -103,3 +103,28 @@ class NewmarkExplicit():
         v = v_ini + a6 * a_ini + a7 * a
 
         return u, v, a
+
+    def newmark_estimation_v_a(self,
+                               u: np.ndarray,
+                               u_previous: np.ndarray,
+                               v_previous: np.ndarray,
+                               a_previous: np.ndarray,
+                               time_step: float) -> Tuple[np.ndarray, np.ndarray]:
+        """
+        Estimate the new velocity and acceleration using Newmark method
+
+        Args:
+            - u (np.ndarray): current displacement
+            - u_previous (np.ndarray): previous displacement
+            - v_previous (np.ndarray): previous velocity
+            - a_previous (np.ndarray): previous acceleration
+            - time_step (float): time step size
+
+        Returns:
+            - Tuple[np.ndarray, np.ndarray]: estimated velocity and acceleration following Newmark method
+        """
+
+        a_p_next = (1/(self.beta * time_step**2)) * ((u - u_previous) - time_step * v_previous) - ((1/(2 * self.beta)) - 1) * a_previous
+        v_p_next = v_previous + (1 - self.gamma) * time_step * a_previous + self.gamma * time_step * a_p_next
+
+        return v_p_next, a_p_next

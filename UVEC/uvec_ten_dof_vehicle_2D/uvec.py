@@ -2,6 +2,7 @@ import json
 import numpy as np
 from typing import Tuple, List
 
+from UVEC.uvec_ten_dof_vehicle_2D.newmark_solver import NewmarkExplicit
 from UVEC.uvec_ten_dof_vehicle_2D.base_model import TrainModel
 from UVEC.uvec_ten_dof_vehicle_2D.hertzian_contact import HertzianContact
 from UVEC.uvec_ten_dof_vehicle_2D.newmark_solver import NewmarkExplicit
@@ -138,11 +139,17 @@ def compute_dynamic_solution(uvec_data: dict) -> dict:
     u_vertical = [u[uw][gravity_axis] for uw in u.keys()]
 
     if time_index <= 0:
+
+        with open("debug.txt", "w") as f:
+            pass
+
         # calculate static displacement
         u_static = train.calculate_initial_displacement(K, F_train, u_vertical)
         state["u"] = u_static
         state["v"] = np.zeros_like(u_static)
         state["a"] = np.zeros_like(u_static)
+        state["previous_force"] = train.calculate_static_contact_force().tolist()
+        state["residual_factor"] = np.zeros_like(u_vertical).tolist()
         state["previous_time"] = 0
         state["previous_time_index"] = time_index
 
@@ -175,18 +182,44 @@ def compute_dynamic_solution(uvec_data: dict) -> dict:
             u_vertical[i] = (calculate_joint_irregularities(state["current_position"][i], **joint_parameters) +
                              u_vertical[i])
 
-    # calculate contact forces
-    F_contact = calculate_contact_forces(u_vertical, train.calculate_static_contact_force(), state, parameters, train,
-                                         time_index)
+    # F = computeee((M, C, K), state, u_vertical, F_train, train.contact_dofs, time_step, time_index)
+    # F, u_next, v_next, a_next = calculate_contact_forces((M, C, K), state, u_vertical, F_train, train.contact_dofs, time_step, time_index)
 
-    # calculate force vector
-    F = F_train
-    F[train.contact_dofs] = F[train.contact_dofs] + F_contact
 
-    # scale the force vector based on the amount of initialisation steps
-    if "initialisation_steps" in parameters:
-        if time_index + 1 < parameters["initialisation_steps"]:
-            F = F * (time_index + 1) / parameters["initialisation_steps"]
+
+    n_dof = K.shape[0]
+    contact_dof = train.contact_dofs
+    # free and prescribed DOFs
+    all_indices = np.arange(n_dof)
+    free_indices = np.delete(all_indices, contact_dof)
+
+    # partition the stiffness matrix
+    K_c = K[:, contact_dof]
+    F = K_c.dot(u_vertical)#[contact_dof]
+    # F = F - F_train
+
+    # # calculate contact forces
+    # F_contact, u_current, v_current, a_current = calculate_contact_forces((M, C, K), F_train, train.calculate_static_contact_force(), state, np.array(u_vertical), train.contact_dofs, time_step, time_index)
+
+    # state["u"] = u_next.tolist()
+    # state["v"] = v_next.tolist()
+    # state["a"] = a_next.tolist()
+
+    # state["u"] = u_current.tolist()
+    # state["v"] = v_current.tolist()
+    # state["a"] = a_current.tolist()
+
+    # F = F_train
+    # F[train.contact_dofs] = F[train.contact_dofs] + F_contact
+
+    # F_contact = calculate_contact_forces((M, C, K), state, np.array(u_vertical), train.contact_dofs, time_step, time_index)
+    # F = F_train
+    # F[train.contact_dofs] = F[train.contact_dofs] + F_contact
+
+    # # scale the force vector based on the amount of initialisation steps
+    # if "initialisation_steps" in parameters:
+    #     if time_index + 1 < parameters["initialisation_steps"]:
+    #         F = F * (time_index + 1) / parameters["initialisation_steps"]
 
     # calculate new state
     u_train, v_train, a_train = calculate(state, (M, C, K, F), time_step, time_index)
@@ -195,11 +228,39 @@ def compute_dynamic_solution(uvec_data: dict) -> dict:
     state["v"] = v_train.tolist()
     state["a"] = a_train.tolist()
 
+    # # update the force vector
+    # F_new = (M.dot(a_train) + C.dot(v_train) + K.dot(u_train))
+    # F = F[train.contact_dofs]
+    # F = train.calculate_static_contact_force() + F_contact
+    # F =  -train.calculate_static_contact_force()+F_contact
+    # omega = 0.25
+    # residual_factor = np.array(state["previous_force"]) - F
+
+    # omega = - (residual_factor.T * (residual_factor - state["residual_factor"])) / np.linalg.norm(residual_factor - state["residual_factor"])**2
+    # omega = np.clip(omega, 0, 1)
+    # F = (1 - omega) * np.array(state["previous_force"]) + omega * F
+    # # F =  np.array(state["previous_force"]) + omega * residual_factor
+
+    # # print(f"Time index: {time_index}, omega: {omega}, F_contact: {F[0]/1e3}")
+
+
+    state["previous_force"] = F.tolist()
+    # state["residual_factor"] = residual_factor.tolist()
+
+
+    F = F[train.contact_dofs]
+
     # calculate unit vector
     aux = {}
-    for i, val in enumerate(F_contact):
-        aux[i + 1] = [0., (-val).tolist(), 0.]
+    for i, val in enumerate(F):
+        aux[i + 1] = [0., (val).tolist(), 0.]
     uvec_data["loads"] = aux
+
+    with open("debug.txt", "a+") as f:
+        aaa = [str(uvec_data["loads"][i][1]) for i in uvec_data["loads"].keys()]
+        f.write(f"{time_index}; {';'.join(aaa)}\n")
+
+
 
     state["previous_time_index"] = time_index
 
@@ -247,34 +308,67 @@ def initialise(time_index: int, parameters: dict,
     return (M, C, K, F), train
 
 
-def calculate_contact_forces(u: List, F_static: np.ndarray, state: dict, parameters: dict, train: TrainModel,
-                             time_index: int) -> np.ndarray:
+def calculate_contact_forces(system_matrix: Tuple[np.ndarray, np.ndarray, np.ndarray],
+                             state: dict, u_contact: List[float],
+                             F_train: np.ndarray, contact_dofs: List[int], time_step: float, time_index: int):
     """
-    Calculate the contact forces
+    Calculate the contact forces for the UVEC system
 
     Args:
-        - u (List): vertical displacement of the wheels
-        - F_static (np.ndarray): static contact force
+        - system_matrix (Tuple[np.ndarray, np.ndarray, np.ndarray]): tuple containing the global matrices [M, C, K]
         - state (dict): dictionary containing the state
-        - parameters (dict): dictionary containing the parameters
-        - train (TrainModel): train model
+        - u_contact (List[float]): list containing the contact displacements
+        - F_train (np.ndarray): array containing the external forces
+        - contact_dofs (List[int]): list containing the contact degrees of freedom
+        - time_step (float): time step
         - time_index (int): time index
-
-    Returns:
-        - np.ndarray: array containing the contact forces
     """
 
-    contact_method = HertzianContact()
-    contact_method.contact_coeff = parameters["contact_coefficient"]
-    contact_method.contact_power = parameters["contact_power"]
+    M, C, K = system_matrix
 
-    u_wheel = np.array(state["u"])[train.contact_dofs]
+    n_dof = K.shape[0]
 
-    static_contact_u = contact_method.calculate_contact_deformation(F_static)
+    # Get the previous state
+    u_prev = np.array(state["u"])
+    v_prev = np.array(state["v"])
+    a_prev = np.array(state["a"])
 
-    du = u_wheel + static_contact_u - u
+    # free and prescribed DOFs
+    all_indices = np.arange(n_dof)
+    free_indices = np.delete(all_indices, contact_dofs)
 
-    return contact_method.calculate_contact_force(du)
+    # Partition matrices and vectors from the PREVIOUS time step
+    u_f_prev = u_prev[free_indices]
+    v_f_prev = v_prev[free_indices]
+    a_f_prev = a_prev[free_indices]
+    F_f_ext = F_train[free_indices]
+
+    M_ff = M[np.ix_(free_indices, free_indices)]
+    M_fp = M[np.ix_(free_indices, contact_dofs)]
+    C_ff = C[np.ix_(free_indices, free_indices)]
+    C_fp = C[np.ix_(free_indices, contact_dofs)]
+    K_ff = K[np.ix_(free_indices, free_indices)]
+    K_fp = K[np.ix_(free_indices, contact_dofs)]
+
+    # force vector at prescribed DOFs
+    F_eff = F_f_ext - K_fp @ u_contact
+
+    # Solve for the unknown free displacements
+    u_f_next = np.linalg.solve(K_ff, F_eff)
+
+
+    # 4. Assemble the full displacement vector for the current step
+    u_next = np.zeros(n_dof)
+    u_next[free_indices] = u_f_next
+    u_next[contact_dofs] = u_contact
+
+    solver = NewmarkExplicit()
+    v_next, a_next = solver.newmark_estimation_v_a(u_next, u_prev, v_prev, a_prev, time_step)
+
+    F_total = M @ a_next + C @ v_next + K @ u_next
+    reaction_forces = F_total[contact_dofs] - F_train[contact_dofs]
+
+    return reaction_forces, u_next, v_next, a_next
 
 
 def calculate(state: dict, matrices: Tuple[np.ndarray, np.ndarray, np.ndarray, np.ndarray], time_step,

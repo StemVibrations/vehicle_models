@@ -138,6 +138,11 @@ def compute_dynamic_solution(uvec_data: dict) -> dict:
     u_vertical = [u[uw][gravity_axis] for uw in u.keys()]
 
     if time_index <= 0:
+
+        with open("debug_hertz.txt", "w") as f:
+            pass
+
+
         # calculate static displacement
         u_static = train.calculate_initial_displacement(K, F_train, u_vertical)
         state["u"] = u_static
@@ -183,6 +188,8 @@ def compute_dynamic_solution(uvec_data: dict) -> dict:
     F = F_train
     F[train.contact_dofs] = F[train.contact_dofs] + F_contact
 
+    # print(f"Time index: {time_index}, F_contact: {F_contact[0]}")
+
     # scale the force vector based on the amount of initialisation steps
     if "initialisation_steps" in parameters:
         if time_index + 1 < parameters["initialisation_steps"]:
@@ -200,6 +207,13 @@ def compute_dynamic_solution(uvec_data: dict) -> dict:
     for i, val in enumerate(F_contact):
         aux[i + 1] = [0., (-val).tolist(), 0.]
     uvec_data["loads"] = aux
+
+
+    with open("debug_hertz.txt", "a+") as f:
+        aaa = [str(uvec_data["loads"][i][1]) for i in uvec_data["loads"].keys()]
+        f.write(f"{time_index}; {';'.join(aaa)}\n")
+
+
 
     state["previous_time_index"] = time_index
 
