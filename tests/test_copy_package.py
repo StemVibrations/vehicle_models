@@ -1,6 +1,7 @@
 import os
-import site
 import subprocess
+import sys
+import sysconfig
 
 
 class TestCopy():
@@ -11,22 +12,22 @@ class TestCopy():
         """
 
         # uninstall the package
-        subprocess.run(['pip', 'uninstall', '-y', "UVEC"])
+        subprocess.run([sys.executable, '-m', 'pip', 'uninstall', '-y', "UVEC"])
 
         # Install the package in normal mode
-        subprocess.run(['pip', 'install', '.', '--force-reinstall'])
+        subprocess.run([sys.executable, '-m', 'pip', 'install', '.', '--force-reinstall'])
 
         # 10 DOF
         from UVEC import uvec_ten_dof_vehicle_2D as uvec
         assert uvec.UVEC_NAME == "uvec_ten_dof_vehicle_2D"
         path_uvec = uvec.get_path_file(uvec.UVEC_NAME)
-        assert os.path.join(site.getsitepackages()[0], r"UVEC/uvec_ten_dof_vehicle_2D") == path_uvec
+        assert os.path.join(sysconfig.get_paths()["purelib"], "UVEC", "uvec_ten_dof_vehicle_2D") == path_uvec
 
         # 2 DOF
         from UVEC import uvec_two_dof_vehicle_2D as uvec
         assert uvec.UVEC_NAME == "uvec_two_dof_vehicle_2D"
         path_uvec = uvec.get_path_file(uvec.UVEC_NAME)
-        assert os.path.join(site.getsitepackages()[0], r"UVEC/uvec_two_dof_vehicle_2D") == path_uvec
+        assert os.path.join(sysconfig.get_paths()["purelib"], "UVEC", "uvec_two_dof_vehicle_2D") == path_uvec
 
     def test_install_package_editable(self):
         """
@@ -34,19 +35,19 @@ class TestCopy():
         """
 
         # uninstall the package
-        subprocess.run(['pip', 'uninstall', '-y', "UVEC"])
+        subprocess.run([sys.executable, '-m', 'pip', 'uninstall', '-y', "UVEC"])
 
         # Install the package in normal mode
-        subprocess.run(['pip', 'install', '-e', '.', '--force-reinstall'])
+        subprocess.run([sys.executable, '-m', 'pip', 'install', '-e', '.', '--force-reinstall'])
 
         # 10 DOF
         from UVEC import uvec_ten_dof_vehicle_2D as uvec
         assert uvec.UVEC_NAME == "uvec_ten_dof_vehicle_2D"
         path_uvec = uvec.get_path_file(uvec.UVEC_NAME)
-        assert os.path.join(os.getcwd(), r"UVEC/uvec_ten_dof_vehicle_2D") == path_uvec
+        assert os.path.join(os.getcwd(), "UVEC", "uvec_ten_dof_vehicle_2D") == path_uvec
 
         # 2 DOF
         from UVEC import uvec_two_dof_vehicle_2D as uvec
         assert uvec.UVEC_NAME == "uvec_two_dof_vehicle_2D"
         path_uvec = uvec.get_path_file(uvec.UVEC_NAME)
-        assert os.path.join(os.getcwd(), r"UVEC/uvec_two_dof_vehicle_2D") == path_uvec
+        assert os.path.join(os.getcwd(), "UVEC", "uvec_two_dof_vehicle_2D") == path_uvec
