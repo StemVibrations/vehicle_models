@@ -1,4 +1,4 @@
-![Tests](https://github.com/StemVibrations/vehicle_models/actions/workflows/workflow.yml/badge.svg)
+[![Tests](https://github.com/StemVibrations/vehicle_models/actions/workflows/workflow.yml/badge.svg?branch=main)](https://github.com/StemVibrations/vehicle_models/actions/workflows/workflow.yml?query=branch%3Amain)
 [![codecov](https://codecov.io/gh/StemVibrations/vehicle_models/graph/badge.svg?token=0SCPA6LAGT)](https://codecov.io/gh/StemVibrations/vehicle_models)
 
 
