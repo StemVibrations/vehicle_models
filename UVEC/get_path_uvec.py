@@ -1,7 +1,8 @@
 import os
 import json
-import site
 import sysconfig
+from urllib.parse import urlparse
+from urllib.request import url2pathname
 
 from .__version__ import __version__, __title__
 
@@ -20,7 +21,7 @@ def editable_path(folder_path: str) -> str:
     with open(os.path.join(folder_path, "direct_url.json"), "r") as f:
         data = json.load(f)
 
-    path_package = data["url"].split("file://")[1]
+    path_package = url2pathname(urlparse(data["url"]).path)
 
     with open(os.path.join(folder_path, "top_level.txt"), "r") as f:
         packages = f.read().splitlines()
@@ -40,7 +41,7 @@ def is_installed_editable(package_name: str) -> bool:
         - bool: True if installed in editable mode, otherwise False.
     """
 
-    return os.path.isfile(os.path.join(site.getsitepackages()[0], f"__editable__.{package_name}.pth"))
+    return os.path.isfile(os.path.join(sysconfig.get_paths()["purelib"], f"__editable__.{package_name}.pth"))
 
 
 def get_package_path() -> str:
